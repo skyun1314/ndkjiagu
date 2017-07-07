@@ -10,6 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true" android:theme="@style/AppTheme"
       >
+        <meta-data android:name="APPLICATION_CLASS_NAME"
+            android:value="com.example.dexx.MyApplication"/>
         <activity android:name="com.example.dexx.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

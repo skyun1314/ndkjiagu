@@ -1,5 +1,6 @@
 package com.example;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -7,18 +8,22 @@ import org.dom4j.io.XMLWriter;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 
 public class MyClass {
 
     public static void main(String[] args) {
 
-        String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/制作dexx文件/build/outputs/apk/制作dexx文件-debug.apk";
+        String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/app/build/outputs/apk/app-debug.apk";
         String path = strNmae.substring(0, strNmae.length() - 4);
         System.out.println("反编译开始");
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool d -f -s  " + strNmae);
         System.out.println("反编译结束");
 
+
+        String[] split = strNmae.split("/");
+        String appname = split[split.length - 1];
 
         CMDUtil.setDir(path);
        // CMDUtil.runCMD("mkdir assets");
@@ -29,8 +34,10 @@ public class MyClass {
         writeManifest(path);
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool b   " + path);
-        String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/制作dexx文件-debug.apk " + "kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
+        String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/"+appname + " kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
         CMDUtil.runCMD(signs);
+
+
     }
 
     public static void writeManifest(String file) {
@@ -41,22 +48,41 @@ public class MyClass {
 
             Element root = document.getRootElement();
 
-            Element application3 = root.element("application");
+            Element application = root.element("application");
 
-            String name = application3.attributeValue("name");
+            String name = application.attributeValue("name");
             if (name == null) {
-                application3.addAttribute("android:name", "com.example.nativedex.MyAppLication");
+                application.addAttribute("android:name", "com.example.nativedex.MyAppLication");
 
 
-                XMLWriter writer = new XMLWriter(new FileWriter(new File(file)));
 
 
-                writer.write(document);
-                writer.close();
+            }else {
+                Element  application3 = root.element("application");
+                List<Element> elements = application3.elements("meta-data");
+                for (int i = 0; i < elements.size(); i++) {
+                    if (elements.get(i).attributeValue("name").equals("APPLICATION_CLASS_NAME")){
+                        return;
+                    }
+                }
+
+
+                Element element = application3.addElement("meta-data");
+                element.addAttribute("android:name", "APPLICATION_CLASS_NAME");
+                element.addAttribute("android:value", name);
+
+                //1.2 得到id属性对象
+                Attribute idAttr=application.attribute("name");
+                //1.3 修改属性值
+                idAttr.setValue("com.example.nativedex.MyAppLication");
 
             }
 
+            XMLWriter writer = new XMLWriter(new FileWriter(new File(file)));
 
+
+            writer.write(document);
+            writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

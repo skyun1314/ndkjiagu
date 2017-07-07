@@ -166,14 +166,14 @@ public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context){
 
 /*
     private String[] getClassNameList(int cookie) {
-        return (String[]) RefInvoke.invokeStaticMethod(DexFile.class.getName(),
+        return (String[]) RefInvoke1.invokeStaticMethod(DexFile.class.getName(),
                 "getClassNameList", new Class[] { int.class },
                 new Object[] { cookie });
     }
 
 
     private Class defineClass(String name, ClassLoader loader, int cookie) {
-        return (Class) RefInvoke.invokeStaticMethod(DexFile.class.getName(),
+        return (Class) RefInvoke1.invokeStaticMethod(DexFile.class.getName(),
                 "defineClass", new Class[] { String.class, ClassLoader.class,
                         int.class }, new Object[] { name, loader, cookie });
     }
