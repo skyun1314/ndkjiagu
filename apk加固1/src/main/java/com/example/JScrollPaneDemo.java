@@ -58,12 +58,9 @@ public class JScrollPaneDemo {
          jLabel = new JLabel("拖动文件到此区域");   //创建标签
         jPaneSend.add(jLabel);
 
-        //String[] words= { "quick", "brown", "hungry", "wild" };
         JList List = new JList();
          DefaultListModel1=new DefaultListModel();
         List.setModel(DefaultListModel1);
-
-
         jPaneSend.add(List);
 
 
