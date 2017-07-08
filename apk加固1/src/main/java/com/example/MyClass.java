@@ -14,31 +14,37 @@ public class MyClass {
 
     public static void main(String[] args) {
 
-        String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/app/build/outputs/apk/app-debug.apk";
+       // String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/app/build/outputs/apk/app-debug.apk";
+
+
+    }
+
+    public static void jiagu(String strNmae){
         String path = strNmae.substring(0, strNmae.length() - 4);
-        System.out.println("反编译开始");
+        System.out.println("开始加固");
+        JScrollPaneDemo.TextViewSHow("开始加固\n");
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool d -f -s  " + strNmae);
         System.out.println("反编译结束");
-
 
         String[] split = strNmae.split("/");
         String appname = split[split.length - 1];
 
         CMDUtil.setDir(path);
-       // CMDUtil.runCMD("mkdir assets");
+        // CMDUtil.runCMD("mkdir assets");
         //CMDUtil.runCMD("cp classes.dex assets/");
         //CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/smali " + path);
-       DexUtil.DexWith(path+"/classes.dex",path+"/classes.dex");
+        DexUtil.DexWith(path+"/classes.dex",path+"/classes.dex");
         CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/lib " + path);
         writeManifest(path);
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool b   " + path);
         String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/"+appname + " kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
         CMDUtil.runCMD(signs);
-
-
+        CMDUtil.runCMD("rm -rf "+path);
+        JScrollPaneDemo.TextViewSHow("\n加固完成");
     }
+
 
     public static void writeManifest(String file) {
         file = file + "/" + "AndroidManifest.xml";

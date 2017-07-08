@@ -37,6 +37,7 @@ public class CMDUtil {
             String line=null;
             while ((line=br.readLine())!=null){
                 System.out.println(line);
+                JScrollPaneDemo.TextViewSHow(line);
             }
 
             if (br==null){
