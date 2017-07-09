@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 //问题: 当滑动滑块时 JTextArea不随着变大
-public class JScrollPaneDemo {
+public class 界面 {
 
     private static JLabel jLabel;
     private static JScrollPane jScrollPane;
@@ -59,6 +59,7 @@ public class JScrollPaneDemo {
         jPaneSend.add(jLabel);
 
         JList List = new JList();
+
          DefaultListModel1=new DefaultListModel();
         List.setModel(DefaultListModel1);
         jPaneSend.add(List);

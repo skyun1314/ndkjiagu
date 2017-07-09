@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
+
 public class MyClass {
 
     public static void main(String[] args) {
@@ -19,30 +20,61 @@ public class MyClass {
 
     }
 
+
+
+
+
     public static void jiagu(String strNmae){
-        String path = strNmae.substring(0, strNmae.length() - 4);
-        System.out.println("开始加固");
-        JScrollPaneDemo.TextViewSHow("开始加固\n");
+     String path = strNmae.substring(0, strNmae.length() - 4);
+        String[] split = strNmae.split("/");
+        String appname = split[split.length - 1];
+          System.out.println("开始加固");
+        界面.TextViewSHow("开始加固\n");
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool d -f -s  " + strNmae);
         System.out.println("反编译结束");
 
-        String[] split = strNmae.split("/");
-        String appname = split[split.length - 1];
+
+        writeManifest(path);
+        CMDUtil.getDir(strNmae);
+        CMDUtil.runCMD("apktool b   " + path+" -o one_"+appname);
+
+        CMDUtil.runCMD("rm -rf  "  +appname.substring(0,appname.length()-4));
+
+        CMDUtil.runCMD("apktool d -f -s -r " + "one_"+appname+" -o "+appname.substring(0,appname.length()-4));
+        CMDUtil.runCMD("rm -rf  "  +"one_"+appname);
 
         CMDUtil.setDir(path);
         // CMDUtil.runCMD("mkdir assets");
         //CMDUtil.runCMD("cp classes.dex assets/");
         //CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/smali " + path);
-        DexUtil.DexWith(path+"/classes.dex",path+"/classes.dex");
+
+
+        ZipCompressor zc = new ZipCompressor(path+"/res.zip");
+        zc.compress(path+"/assets",path+"/resources.arsc",path+"/res");
+
+        CMDUtil.runCMD("rm -rf  " + path+"/res");
+        CMDUtil.runCMD("rm -rf  " + path+"/assets");
+
+
+
+
+        DexUtil.DexWith("force/ForceApkObj.dex",path+"/res.zip",path+"/classes1.dex");
+
+        DexUtil.DexWith(path+"/classes1.dex",path+"/classes.dex",path+"/classes.dex");
         CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/lib " + path);
-        writeManifest(path);
+        CMDUtil.runCMD("rm -rf  " + path+"/res.zip");
+        CMDUtil.runCMD("rm -rf  " + path+"/classes1.dex");
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool b   " + path);
-        String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/"+appname + " kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
+
+
+        String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/"+"one_"+appname + " kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
         CMDUtil.runCMD(signs);
         CMDUtil.runCMD("rm -rf "+path);
-        JScrollPaneDemo.TextViewSHow("\n加固完成");
+        界面.TextViewSHow("\n加固完成");
+        界面.TextViewSHow("\n加固完成");
+        界面.TextViewSHow("\n加固完成");
     }
 
 

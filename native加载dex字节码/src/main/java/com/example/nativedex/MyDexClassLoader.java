@@ -3,6 +3,7 @@ package com.example.nativedex;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -26,7 +27,6 @@ public class MyDexClassLoader extends DexClassLoader{
 
     public MyDexClassLoader(Context context,byte[] dexBytes,String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
         super(dexPath, optimizedDirectory, librarySearchPath, parent);
-       // super(null, null, null, null);
        mClassLoader=parent;
         mCookie = loadDex(dexBytes);
         mContext=context;
@@ -105,6 +105,8 @@ public class MyDexClassLoader extends DexClassLoader{
             Class<?> aClass1 = Class.forName("android.app.LoadedApk");
             Field mClassLoader = aClass1.getDeclaredField("mClassLoader");
             mClassLoader.setAccessible(true);
+
+
             mClassLoader.set(o.get(),dexClassLoader);
             return dexClassLoader;
         } catch (ClassNotFoundException e) {
@@ -125,6 +127,22 @@ public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context){
         Class<?> aClass1 = Class.forName("android.app.LoadedApk");
         Field mClassLoader = aClass1.getDeclaredField("mClassLoader");
         mClassLoader.setAccessible(true);
+
+
+
+        Field mResDir = aClass1.getDeclaredField("mResDir");
+        mResDir.setAccessible(true);
+        String mResDir_str= (String) mResDir.get(o.get());
+
+        String path;
+
+        if (context.getPackageName().equals("com.example.nativedex")) {
+             path = FileUtil.copyDex("res.zip", context);
+        } else {
+             path =context.getFilesDir() + File.separator + "res.zip";
+        }
+        mResDir.set(o.get(),path);
+
         Object loadedapk = o.get();
         Object classLoader=mClassLoader.get(loadedapk);
         Class clzBaseDexClassLoader=Class.forName("dalvik.system.BaseDexClassLoader");
@@ -164,88 +182,5 @@ public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context){
     }
 }
 
-/*
-    private String[] getClassNameList(int cookie) {
-        return (String[]) RefInvoke1.invokeStaticMethod(DexFile.class.getName(),
-                "getClassNameList", new Class[] { int.class },
-                new Object[] { cookie });
-    }
-
-
-    private Class defineClass(String name, ClassLoader loader, int cookie) {
-        return (Class) RefInvoke1.invokeStaticMethod(DexFile.class.getName(),
-                "defineClass", new Class[] { String.class, ClassLoader.class,
-                        int.class }, new Object[] { name, loader, cookie });
-    }
-
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        Log.d(TAG, "findClass-" + name);
-        Class<?> cls = null;
-
-        String as[] = getClassNameList(mCookie);
-        for (int z = 0; z < as.length; z++) {
-            if (as[z].equals(name)) {
-                cls = defineClass(as[z].replace('.', '/'),
-                        mContext.getClassLoader(), mCookie);
-            } else {
-                defineClass(as[z].replace('.', '/'), mContext.getClassLoader(),
-                        mCookie);
-            }
-        }
-
-        if (null == cls) {
-            cls = super.findClass(name);
-        }
-
-        return cls;
-    }
-
-    @Override
-    protected URL findResource(String name) {
-        Log.d(TAG, "findResource-" + name);
-        return super.findResource(name);
-    }
-
-    @Override
-    protected Enumeration<URL> findResources(String name) {
-        Log.d(TAG, "findResources ssss-" + name);
-        return super.findResources(name);
-    }
-
-    @Override
-    protected synchronized Package getPackage(String name) {
-        Log.d(TAG, "getPackage-" + name);
-        return super.getPackage(name);
-    }
-
-    @Override
-    protected Class<?> loadClass(String className, boolean resolve)
-            throws ClassNotFoundException {
-        Log.d(TAG, "loadClass-" + className + " resolve " + resolve);
-        Class<?> clazz = super.loadClass(className, resolve);
-        if (null == clazz) {
-            Log.e(TAG, "loadClass fail,maybe get a null-point exception.");
-        }
-        return clazz;
-    }
-
-    @Override
-    protected Package[] getPackages() {
-        Log.d(TAG, "getPackages sss-");
-        return super.getPackages();
-    }
-
-    @Override
-    protected Package definePackage(String name, String specTitle,
-                                    String specVersion, String specVendor, String implTitle,
-                                    String implVersion, String implVendor, URL sealBase)
-            throws IllegalArgumentException {
-        Log.d(TAG, "definePackage" + name);
-        return super.definePackage(name, specTitle, specVersion, specVendor,
-                implTitle, implVersion, implVendor, sealBase);
-    }
-
-*/
 
 }

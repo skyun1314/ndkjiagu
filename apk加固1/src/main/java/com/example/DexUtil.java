@@ -16,13 +16,13 @@ public class DexUtil {
 	/**
 	 * @param
 	 */
-	public static void DexWith(String srcDex,String dirDex) {
+	public static void DexWith(String srcDex0,String srcDex,String outDex) {
 		// TODO Auto-generated method stub
 		try {
 			System.out.println(System.getProperty("user.dir"));
 			File payloadSrcFile = new File(srcDex);   //需要加壳的程序
 			System.out.println("apk size:"+payloadSrcFile.length());
-			File unShellDexFile = new File("force/ForceApkObj.dex");	//解客dex
+			File unShellDexFile = new File(srcDex0);	//解客dex
 			byte[] payloadArray = encrpt(readFileBytes(payloadSrcFile));//以二进制形式读出apk，并进行加密处理//对源Apk进行加密操作
 			byte[] unShellDexArray = readFileBytes(unShellDexFile);//以二进制形式读出dex
 			int payloadLen = payloadArray.length;
@@ -43,12 +43,12 @@ public class DexUtil {
 			fixCheckSumHeader(newdex);
 
 			//String str = "force/classes.dex";
-			File file = new File(dirDex);
+			File file = new File(outDex);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 
-			FileOutputStream localFileOutputStream = new FileOutputStream(dirDex);
+			FileOutputStream localFileOutputStream = new FileOutputStream(outDex);
 			localFileOutputStream.write(newdex);
 			localFileOutputStream.flush();
 			localFileOutputStream.close();
@@ -61,9 +61,9 @@ public class DexUtil {
 
 	//直接返回数据，读者可以添加自己加密方法
 	private static byte[] encrpt(byte[] srcdata){
-		/*for(int i = 0;i<srcdata.length;i++){
+		for(int i = 0;i<srcdata.length;i++){
 			srcdata[i] = (byte)(0xFF ^ srcdata[i]);
-		}*/
+		}
 		return srcdata;
 	}
 
