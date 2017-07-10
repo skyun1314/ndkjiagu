@@ -15,33 +15,61 @@ public class MyClass {
 
     public static void main(String[] args) {
 
-       // String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/app/build/outputs/apk/app-debug.apk";
+        String strNmae = "/Users/zk/Documents/andriod/Development/workspace/ndk练习/制作dexx文件/build/outputs/apk/制作dexx文件-debug.apk";
+
+        jiagu(strNmae);
+    }
 
 
+    public static void AndRes(String strNmae){
+        String[] split = strNmae.split("/");
+        String appname = split[split.length - 1];
+        String path = strNmae.substring(0, strNmae.length() - 4);
+        String appNameNoApk=appname.substring(0,appname.length()-4);
+        int length = split[split.length - 1].length();
+        String appDir = strNmae.substring(0, strNmae.length()-length);
+
+
+        CMDUtil.setDir("/Users/zk/Desktop/netive_dex/AndResGuard-1.2.3");
+        CMDUtil.runCMD("java -jar AndResGuard-cli-1.2.0.jar "+strNmae);
+
+
+
+        CMDUtil.runCMD("cp "+appNameNoApk+"/"+appNameNoApk+"_unsigned.apk "+appNameNoApk+"/"+appname );
+
+        CMDUtil.setDir("/Users/zk/Desktop/netive_dex/AndResGuard-1.2.3/"+appNameNoApk);
+
+        CMDUtil.runCMD("apktool d -f -s  " + appname);
+
+        CMDUtil.runCMD("rm  -rf "+path);
+        CMDUtil.runCMD("cp -r "+appNameNoApk+" "+appDir);
     }
 
 
 
-
-
     public static void jiagu(String strNmae){
-     String path = strNmae.substring(0, strNmae.length() - 4);
+        System.out.println("开始加固");
+        界面.TextViewSHow("开始加固\n");
+
+        AndRes(strNmae);
+
+        String path = strNmae.substring(0, strNmae.length() - 4);
         String[] split = strNmae.split("/");
         String appname = split[split.length - 1];
-          System.out.println("开始加固");
-        界面.TextViewSHow("开始加固\n");
+        String appNameNoApk=appname.substring(0,appname.length()-4);
+
         CMDUtil.getDir(strNmae);
-        CMDUtil.runCMD("apktool d -f -s  " + strNmae);
-        System.out.println("反编译结束");
+       // CMDUtil.runCMD("apktool d -f -s  " + strNmae);
+        //System.out.println("反编译结束");
 
 
         writeManifest(path);
         CMDUtil.getDir(strNmae);
         CMDUtil.runCMD("apktool b   " + path+" -o one_"+appname);
 
-        CMDUtil.runCMD("rm -rf  "  +appname.substring(0,appname.length()-4));
+        CMDUtil.runCMD("rm -rf  "  +appNameNoApk);
 
-        CMDUtil.runCMD("apktool d -f -s -r " + "one_"+appname+" -o "+appname.substring(0,appname.length()-4));
+        CMDUtil.runCMD("apktool d -f -s -r " + "one_"+appname+" -o "+appNameNoApk);
         CMDUtil.runCMD("rm -rf  "  +"one_"+appname);
 
         CMDUtil.setDir(path);

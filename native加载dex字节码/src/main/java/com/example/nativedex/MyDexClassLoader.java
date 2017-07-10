@@ -18,7 +18,6 @@ import dalvik.system.DexClassLoader;
 
 public class MyDexClassLoader extends DexClassLoader{
     private static final String TAG1 ="wodelog" ;
-    private static final String TAG = "wodelog";
     ClassLoader mClassLoader;
     private int mCookie;
     Context mContext;
@@ -157,7 +156,6 @@ public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context){
 
         //int cookie=MmClassLoader.getcookie();
         int length= Array.getLength(dexElemennts);
-        System.out.println("dex元素数组大小:"+length);
 
         for (int i = 0; i < length; i++) {
             Object ele=Array.get(dexElemennts,i);

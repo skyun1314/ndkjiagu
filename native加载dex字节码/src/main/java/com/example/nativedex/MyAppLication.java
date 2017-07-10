@@ -73,10 +73,6 @@ public class MyAppLication extends Application {
         assets_byte = decrpt(assets_byte);
 
 
-
-
-        Log.e("wodelog","assets_Size:"+assets_dexSize);
-        Log.e("wodelog","assets_Byte:"+bytesToHexString(assets_byte));
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
         try {
@@ -108,8 +104,6 @@ public class MyAppLication extends Application {
 
 
         // String path = FileUtil.copyDex("classes.dex", this);
-
-        Log.e("wodelog", "读取的dex大小" + sizeByoff.length);
 
         myDexClassLoader = new MyDexClassLoader(
                 this,
@@ -227,7 +221,6 @@ public class MyAppLication extends Application {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void getOldAppCation() {
-        Log.i("demo", "onCreate");
         // 如果源应用配置有Appliction对象，则替换为源应用Applicaiton，以便不影响源程序逻辑。
         String appClassName = null;
 

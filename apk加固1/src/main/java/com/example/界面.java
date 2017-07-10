@@ -29,6 +29,10 @@ public class 界面 {
     private static JTextArea mJTextArea;
     private static  DefaultListModel DefaultListModel1;
     public static void TextViewSHow(String msg){
+
+        if (jScrollPane==null)
+            return;
+
         JScrollBar bar=jScrollPane.getVerticalScrollBar();
         bar.setValue(bar.getMaximum());
         mJTextArea.append(msg +"\n");
