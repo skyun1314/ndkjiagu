@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Navigasi skrin utama</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Navigasi ke atas</string>
+    <string name="e">Lagi pilihan</string>
+    <string name="f">Selesai</string>
+    <string name="g">Lihat semua</string>
+    <string name="h">Pilih apl</string>
+    <string name="i">MATI</string>
+    <string name="j">HIDUP</string>
+    <string name="k">Cari…</string>
+    <string name="l">Kosongkan pertanyaan</string>
+    <string name="m">Pertanyaan carian</string>
+    <string name="n">Cari</string>
+    <string name="o">Serah pertanyaan</string>
+    <string name="p">Carian suara</string>
+    <string name="q">Kongsi dengan</string>
+    <string name="r">Kongsi dengan %s</string>
+    <string name="s">Runtuhkan</string>
+    <string name="t">Cari</string>
+    <string name="u">999+</string>
+</resources>

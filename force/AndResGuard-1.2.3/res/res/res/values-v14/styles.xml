@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="a1" parent="@style/ic" />
+    <style name="a2" parent="@style/id" />
+    <style name="a6" parent="@style/ar">
+        <item name="android:textSize">@dimen/b1</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <style name="a7" parent="@android:style/TextAppearance.StatusBar.EventContent" />
+    <style name="a8" parent="@android:style/TextAppearance.StatusBar.EventContent.Title" />
+    <style name="a9" parent="@android:style/TextAppearance.StatusBar.EventContent" />
+    <style name="a_" parent="@style/a9" />
+    <style name="aa" parent="@style/a9">
+        <item name="android:textSize">@dimen/bv</item>
+    </style>
+    <style name="ab" parent="@style/a9" />
+    <style name="ac" parent="@android:style/TextAppearance.StatusBar.EventContent.Title" />
+    <style name="ic" parent="@style/i9">
+        <item name="android:actionModeSelectAllDrawable">?ck</item>
+        <item name="android:listPreferredItemPaddingLeft">@dimen/ar</item>
+        <item name="android:listPreferredItemPaddingRight">@dimen/ar</item>
+    </style>
+    <style name="id" parent="@style/i_">
+        <item name="android:actionModeSelectAllDrawable">?ck</item>
+        <item name="android:listPreferredItemPaddingLeft">@dimen/ar</item>
+        <item name="android:listPreferredItemPaddingRight">@dimen/ar</item>
+    </style>
+</resources>

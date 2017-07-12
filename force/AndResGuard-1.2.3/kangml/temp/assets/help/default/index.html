@@ -1,0 +1,457 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>OpenVPN Connect Android FAQ</title>
+
+<style>
+body {
+	font-family: "Helvetica";
+	padding: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>OpenVPN Connect Android FAQ</h2>
+
+
+
+<h3><i>Q: How to get started?</i></h3>
+
+<p>A: To use this app, you must have an OpenVPN profile and a server to connect to.
+OpenVPN profiles are files that have an extension of <b>.ovpn</b></p>
+
+<p>There are several methods available to import a profile:</p>
+
+<ul>
+
+<li>If you have a .ovpn profile, copy the profile and any files it references to the SD card
+folder on your device (copy all files to the same folder).
+Then go to Menu / Import / Import Profile from SD card.</li>
+
+<li>If you have an account on an OpenVPN Access Server, you can import the profile
+directly from the Access Server by going to Menu / Import / Import Access Server Profile.</li>
+
+<li>If you have an account on the Private Tunnel service, go to Menu / Import / Import
+Private Tunnel Profile.</li>
+
+</ul>
+
+
+
+
+<h3><i>Q: Is OpenVPN Connect for Android vulnerable to Heartbleed?</i></h3>
+
+<p>A: No, all versions of OpenVPN Connect for Android use the PolarSSL library,
+which is immune to Heartbleed.</p>
+
+<h3><i>Q: Are CRLs (certificate revocation lists) supported?</i></h3>
+
+<p>A: Yes, CRLs are supported starting with version
+1.1.14
+for Android.</p>
+
+<p>To use a CRL, it must be added to the .ovpn profile, such as:</p>
+
+<blockquote><tt>
+&lt;crl-verify&gt;<br>
+-----BEGIN X509 CRL-----<br>
+MIHxMFwwDQYJKoZIhvcNAQEEBQAwFTETMBEGA1UEAxMKT3BlblZQTiBDQRcNMTQw<br>
+NDIyMDQzOTI3WhcNMjQwNDE5MDQzOTI3WjAWMBQCAQEYDzIwMTQwNDIyMDQzOTI3<br>
+WjANBgkqhkiG9w0BAQQFAAOBgQBQXzbNjXkx8+/TeG8qbFQD5wd6wOTe8HnypQTt<br>
+eELsI7eyNtiRRhJD3qKfawPVUabSijnwhAPHfhoIOLKe67RLfzOwAsFKPNJAVdmq<br>
+rYw1t2eucHvGjH8PnTh0aJPJaI67jmNbSI4CnHNcRgZ+1ow1GS+RAK7kotS+dZz9<br>
+0tc7Qw==<br>
+-----END X509 CRL-----<br>
+&lt;/crl-verify&gt;<br>
+</tt></blockquote>
+
+<p>Multiple CRLs may be concatenated together within the <b>crl-verify</b> block above.</p>
+
+<p>If you are importing a .ovpn file
+that references an external CRL file such as</p>
+<blockquote><tt>
+crl-verify crl.pem
+</tt></blockquote>
+<p>make sure to drop the file <b>crl.pem</b> into the same
+place as the .ovpn file during import, so the profile parser can
+access it.</p>
+
+<h3><i>Q: I am having trouble importing my .ovpn file.</i></h3>
+
+<p>A: Here are some basic pointers for importing .ovpn files:</p>
+
+<ul>
+
+
+<li><p>When you import a .ovpn file, make sure that all files referenced by the
+.ovpn file such as <b>ca</b>, <b>cert</b>, and <b>key</b> files are in the
+same directory on the device as the .ovpn file.</p></li>
+
+
+<li><p>Profiles must be UTF-8 (or ASCII) and under 256 KB in size.</p></li>
+
+<li><p>Consider using the <b>unified</b> format for OpenVPN profiles
+which allows all certs and keys to be embedded into the .ovpn file.  This eases
+management of the OpenVPN configuration because it integrates all elements of the
+configuration into a single file.</p>
+
+<p>For example, a traditional OpenVPN profile might specify certs
+and keys as follows:</p>
+
+<blockquote><tt>
+ca ca.crt<br>
+cert client.crt<br>
+key client.key<br>
+tls-auth ta.key 1<br>
+</tt></blockquote>
+
+<p>You can convert this usage to <b>unified form</b> by pasting the content
+of the certificate and key files directly into the OpenVPN profile as follows
+using an XML-like syntax:</p>
+
+<blockquote><tt>
+<b>&lt;ca&gt;</b><br>
+-----BEGIN CERTIFICATE-----<br>
+MIIBszCCARygAwIBAgIE...<br>
+. . .<br>
+/NygscQs1bxBSZ0X3KRk...<br>
+Lq9iNBNgWg==<br>
+-----END CERTIFICATE-----<br>
+<b>&lt;/ca&gt;</b><br>
+<br>
+<b>&lt;cert&gt;</b><br>
+-----BEGIN CERTIFICATE-----<br>
+. . .<br>
+<b>&lt;/cert&gt;</b><br>
+<br>
+<b>&lt;key&gt;</b><br>
+-----BEGIN RSA PRIVATE KEY-----<br>
+. . .<br>
+<b>&lt;/key&gt;</b><br>
+<br>
+<b>key-direction 1</b><br>
+<b>&lt;tls-auth&gt;</b><br>
+-----BEGIN OpenVPN Static key V1-----<br>
+. . .<br>
+<b>&lt;/key&gt;</b><br>
+</tt></blockquote>
+
+<p>Another approach to eliminate certificates and keys from the OpenVPN profile
+is to use the Android Keychain as described below.</p> 
+
+<p>NOTE: when converting <b>tls-auth</b> to unified format, check if there is a second
+parameter after the filename (usually a 0 or 1).  This parameter is known as the
+<b>key-direction</b> parameter and must be specified as a standalone directive when
+<b>tls-auth</b> is converted to unified format.  For example if the parameter is 1,
+add this line to the profile:</p>
+
+<blockquote><tt><b>
+key-direction 1
+</b></tt></blockquote>
+
+<p>If there is no second parameter to <b>tls-auth</b>, you must add this line to the profile:</p>
+
+<blockquote><tt><b>
+key-direction bidirectional
+</b></tt></blockquote>
+
+</li>
+</ul>
+
+
+<h3><i>Q: Where are the support forums for OpenVPN Connect?</i></h3>
+
+<p>A: <a href="https://forums.openvpn.net/">https://forums.openvpn.net/</a></p>
+
+<h3><i>Q: Is IPv6 supported?</i></h3>
+
+<p>A: Yes.  The OpenVPN app supports IPv6 transport and IPv6 tunnels as long as the
+server supports them as well.</p>
+
+
+
+<h3><i>Q: Why does OpenVPN Connect show two notification icons when connected?</i></h3>
+
+<p>A: This is something Android requires to affirm that the VPN
+session is high priority and should not be arbitrarily terminated by the system.</p>
+
+<h3><i>Q: Can I disable the connection notification sound?</i></h3>
+
+<p>A: On some Android devices, a connection notification sound is played by
+Android whenever a VPN tunnel is established, and cannot be silenced by
+a non-root app.</p>
+
+<p>Note that it is possible to reduce the frequency of these notifications
+by going to the Preferences menu and selecting the <b>Seamless Tunnel</b>
+option.</p>
+
+<h3><i>Q: How can I maximize battery life?</i></h3>
+
+<p>A: Consider selecting the <b>Battery Saver</b> option in the Preferences menu to Pause the
+VPN when the device screen is blanked.  This will cause the VPN to disconnect when the screen
+is blanked and automatically reconnect when the screen becomes visible again.  While this
+option can extend battery life, it should not be used if you have apps running in the background
+that require continuous access to the internet via the VPN (such as a new email notifier).</p>
+
+<p>Note that if you select both the <b>Battery Saver</b> and <b>Seamless Tunnel</b> options,
+you will block any app from reaching the internet while the VPN is active but the
+device screen is blanked.  This can be useful for additional energy savings, as long
+as you don't have any background apps that need constant internet access.</p>
+
+<h3><i>Q: Can I control the VPN from outside the app?</i></h3>
+
+<p>A: Yes, using shortcuts.  Go to Menu / Add Shortcut to add a shortcut to your home page.
+Shortcuts can be created for:</p>
+
+<ul>
+<li>connecting a specific profile,</li>
+<li>disconnecting, and</li>
+<li>launching the app</li>
+</ul>
+
+<h3><i>Q: How can I ensure that the VPN stays continuously connected?</i></h3>
+
+<p>A: In the Preferences menu, select the <b>Reconnect on reboot</b> option.
+Also, consider setting the <b>Connection Timeout</b> preference to "continuously retry".
+If you want to prevent apps from accessing the internet, except through the VPN,
+select the <b>Seamless Tunnel</b> preference.</p> 
+
+
+<h3><i>Q: Why does the VPN disconnect when I make or receive a voice call?</i></h3>
+
+<p>A: Some cellular networks are incapable of maintaining a data connection during a voice
+call.  If Android detects this as a loss of network connectivity, the VPN should
+enter a pause state during the duration of the call, and automatically resume after
+the call is complete.  However if the loss of data connectivity isn't detected by
+Android, the VPN connection may time out and disconnect.</p>
+
+<h3><i>Q: Given that mobile devices are easily lost or stolen, how best to secure VPN profiles
+against compromise if the device falls into the wrong hands?</i></h3>
+
+<ul>
+<li>A: The most sensitive piece of data in a profile is the private key.
+Consider removing the client certificate and private key from the profile
+and save them in the device Keychain instead (this is discussed below).</li>
+<li>Use a strong device-level password.  This is critical to protect data stored in the device
+Keychain.</li>
+</ul>
+
+</p>
+
+<h3><i>Q: Is it safe to save passwords?</i></h3>
+
+<p>A: If you check the <b>Save</b> checkbox on the authentication or private key password
+fields, the app will store your password in
+an encrypted form, however a determined attacker with physical possession of the
+device would still be able to recover the password with some reverse engineering.</p>
+
+<p>Currently, the best options for security are to avoid saving passwords,
+and to use the Android Keychain as a repository for your private key (see below).</p>
+
+<p>The Android developers are in the process of implementing an API for secure storage
+of passwords that will leverage on the hardware-backed keystore and master device
+password, however this development is not complete as of Android 4.2.
+This approach will protect saved passwords even if the device is rooted.
+When this development is complete, we plan to support it in the app.</p>
+
+
+<h3><i>Q: Why is the save password switch sometimes disabled?</i></h3>
+
+<p>A: The save password switch on the authentication password field is normally enabled,
+but can be disabled by the following:</p>
+
+<ul>
+<li><p>The following OpenVPN directive, if present in a profile, will disable the password save switch:</p>
+<blockquote><tt><b>
+setenv ALLOW_PASSWORD_SAVE 0
+</b></tt></blockquote>
+<p>Note however that the above directive only applies to the authentication password.
+The private key password, if it exists, can always be saved.</p>
+</li>
+</ul>
+
+
+<h3><i>Q: How to make the app work with profiles that lack a client certificate/key?</i></h3>
+
+<p>A: If you have a profile that connects to a server without a client certificate/key,
+you will need to add the following directive to your profile:</p>
+
+<blockquote><tt><b>
+setenv CLIENT_CERT 0
+</b></tt></blockquote>
+
+<p>This is necessary to resolve an ambiguity when the profile
+contains no client certificate or key, because otherwise
+the client app can't know whether an external certificate/key
+pair should be obtained from the Android Keychain, or whether the
+server actually doesn't require a client certificate/key
+(for example if the server is configured with the <b>client-cert-not-required</b> directive).
+The option is given as a "setenv" to avoid breaking other
+OpenVPN clients that might not recognize it.</p>
+
+<h3><i>Q: Why doesn't the app support tap-style tunnels?</i></h3>
+
+<p>A: The Android VPN API supports only tun-style tunnels at the moment.
+This is a limitation of the Android platform.  If you try to connect a profile that uses
+a tap-based tunnel, you will get an error that only layer 3 tunnels are currently
+supported.</p>
+
+<p>If you really want to see tap-style tunnels supported in OpenVPN Connect,
+we would encourage you to
+<a href="http://code.google.com/p/android/issues/list">contact the Google Android team</a>
+and ask that the VpnService API be extended to allow this.  Without such changes to
+the VpnService API, it is not possible for non-root apps such as OpenVPN Connect to support
+tap-style tunnels.</p>
+
+<h3><i>Q: Are there any OpenVPN directives not supported by the app?</i></h3>
+
+<p>A: While most OpenVPN client directives are supported by the app, we have made an
+effort to reduce bloat and improve maintainability by eliminating what we believe to be obsolete or rarely-used
+directives.  Please email us at <a href="mailto:android@openvpn.net">android@openvpn.net</a> if you
+believe that a specific directive that is not included should be reconsidered for inclusion.</p>
+
+<p>Here is a partial list of directives not currently supported:</p>
+
+<ul>
+
+<li><b>dev tap</b> &mdash; This directive is not supported because the underlying Android
+VPN API doesn't support tap-style tunnels.</li>
+
+<li><b>fragment</b> &mdash; The fragment directive is not supported due to the complexity
+it adds to the OpenVPN implementation and the fact that it is usually better to leave
+fragmentation up to the lower-level transport protocols.  Note as well that the client
+does not support connecting to a server that uses the fragment directive.</li>
+
+<li><b>mssfix</b> &mdash; This directive will be added in a future release.  Since the
+functionality of mssfix can be achieved on either the client or server side, specifying
+it on the server side will enable it even if the client doesn't support the directive.</li>
+
+<li><b>secret</b> &mdash; Static key encryption mode (non-TLS) is not supported.</li>
+
+<li><b>socks-proxy</b> &mdash; Socks proxy support is currently not supported.</li>
+
+<li>Ciphers other than AES, Blowfish, and DES family &mdash; Currently, only AES, Blowfish,
+and DES family ciphers are supported.  This is done to reduce bloat and improve energy efficiency.
+The AES cipher algorithm, in particular, is well-suited for the ARM processor
+generally used in Android devices.</li>
+
+<li>proxy directives &mdash; While proxy directives are currently supported
+(<b>http-proxy</b> and <b>http-proxy-option</b>), they are currently NOT supported in
+<b>&lt;connection&gt;</b> profiles.</li>
+
+</ul>
+
+<h3><i>Q: Can I have multiple profiles?</i></h3>
+
+<p>A: Yes, you can import any number of profiles from the Import menu -- tap the profile
+field to select one.  Keep in mind that OpenVPN will assign a name to a profile
+based on the server that the profile connects to.  If you import a profile
+with the same name as one that already exists, the new profile will
+replace the old one.  You can prevent this from happening by renaming the
+old profile.</p>
+
+
+<h3><i>Q: How do I delete or rename a profile?</i></h3>
+
+<p>A: Doing a "long touch" on the profile field will bring up a context menu for that
+profile that includes delete, rename, etc.</p>
+
+<h3><i>Q: Can I have multiple proxies?</i></h3>
+
+<p>A: Yes, you can add any number of proxies from the main menu.   Once a proxy
+is added, a proxy selection field will appear on the main page.  Tap the field
+to select a proxy or <b>None</b> at the end of the list to connect directly.</p>
+
+<h3><i>Q: How do I edit or delete a proxy?</i></h3>
+
+<p>A: Doing a "long touch" on the proxy field will bring up a context menu for that
+proxy that includes edit, delete, etc.</p>
+
+
+<h3><i>Q: How do I use a client certificate and private key from the Android Keychain?</i></h3>
+
+<p>A: Using the Android keychain to store your private key has the added security advantage
+of leveraging on the hardware-backed
+keystores that exist on many Android devices, allowing the key to be protected by the
+Android-level device password, and preventing key compromise even if the device
+is rooted.</p>
+
+<p>If you already have your client certificate and private key bundled into a PKCS#12
+file (extension <b>.p12</b> or <b>.pfx</b>), you can import it into the Android Keychain
+using either the Import menu or the Settings app.
+</p>
+
+
+<p>If you don't have a PKCS#12 file, you can convert your certificate and
+key files into PKCS#12 form using this <b>openssl</b> command (where <b>cert</b>, <b>key</b>,
+and <b>ca</b> are your client certificate, client key, and root CA files).</p>
+
+<blockquote><tt><b>
+openssl pkcs12 -export -in cert -inkey key -certfile ca -name MyClient -out client.p12
+</b></tt></blockquote>
+
+<p>Then import the <b>client.p12</b> file from the previous step into the app
+using the Import / Import PKCS#12 menu option.</p>
+
+<p>Once this is done, remove the
+<b>ca</b>, <b>cert</b>, and <b>key</b>
+directives from your .ovpn file and re-import it.
+When you connect the first time, the app will
+ask you to select a certificate to use for the profile.
+Just select the <b>MyClient</b>
+certificate and you should be able to connect normally.</p>
+
+<h3><i>Q: When I try to import a PKCS#12 file, why am I being asked for a password?</i></h3>
+
+<p>A: When you generate a PKCS#12 file, you will always be asked for an "export
+password" to encrypt the file.  This password must again be presented when the
+PKCS#12 file is imported into the Android Keychain.  This is to prevent interception
+and recovery of the private key during transport.</p>
+
+<h3><i>Q: Why doesn't the PKCS#12 file in my OpenVPN configuration file work the
+same as on desktop systems?</i></h3>
+
+<p>PKCS#12 files on Android are used somewhat differently than on
+desktop versions of OpenVPN.  In desktop versions, PKCS#12 files can be bundled
+or referenced in the OpenVPN profile.  On Android, however, PKCS#12 management is
+built into the Android Keychain.  This approach is much better from a security
+perspective, because the Keychain can then leverage on hardware features
+in the device such as hardware-backed keystores.  However, it does require that
+the PKCS#12 file is loaded into the Android Keychain as a separate step from importing
+the OpenVPN profile.  It also moves the responsibility for managing PKCS#12 files
+to the Android Keychain, and away from OpenVPN, so it can potentially introduce
+compatibility issues.</p>
+
+<p>To use a PKCS#12 file on Android, see the FAQ item above: <i>How do I use a client
+certificate and private key from the Android Keychain?</i></p>
+
+
+
+<h3><i>Q: How do I set up my profile for server failover?</i></h3>
+
+<p>A: You can provide OpenVPN with a list of servers to connect to.  On connection
+failure, OpenVPN will rotate through the list until it finds a responsive server.
+For example, the following entries in the profile will first try to connect to
+server A via UDP port 1194, then TCP port 443, then repeat the process with server B.
+OpenVPN will continue to retry until it successfully connects or hits the Connection
+Timeout, which can be configured in the Preferences.
+</p>
+
+<blockquote><tt>
+remote server-a.example.tld 1194 udp<br>
+remote server-a.example.tld 443 tcp<br>
+remote server-b.example.tld 1194 udp<br>
+remote server-b.example.tld 443 tcp<br>
+</tt></blockquote>
+
+
+<h3><i>Q: How can I contact the developers about bugs or feature requests?</i></h3>
+
+<p>A: Send email to <a href="mailto:android@openvpn.net">android@openvpn.net</a>.</p>
+
+</body>
+</html>

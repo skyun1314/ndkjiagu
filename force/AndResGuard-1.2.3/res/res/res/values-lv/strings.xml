@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Pārvietoties uz sākuma ekrānu</string>
+    <string name="b">%1$s: %2$s</string>
+    <string name="c">%1$s, %2$s: %3$s</string>
+    <string name="d">Pārvietoties augšup</string>
+    <string name="e">Vairāk opciju</string>
+    <string name="f">Gatavs</string>
+    <string name="g">Skatīt visu</string>
+    <string name="h">Izvēlieties lietotni</string>
+    <string name="i">IZSLĒGTS</string>
+    <string name="j">IESLĒGTS</string>
+    <string name="k">Meklējiet…</string>
+    <string name="l">Notīrīt vaicājumu</string>
+    <string name="m">Meklēšanas vaicājums</string>
+    <string name="n">Meklēt</string>
+    <string name="o">Iesniegt vaicājumu</string>
+    <string name="p">Meklēšana ar balsi</string>
+    <string name="q">Kopīgot ar:</string>
+    <string name="r">Kopīgot ar %s</string>
+    <string name="s">Sakļaut</string>
+    <string name="t">Meklēt</string>
+    <string name="u">999+</string>
+</resources>

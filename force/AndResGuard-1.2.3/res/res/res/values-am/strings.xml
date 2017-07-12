@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">ወደ መነሻ ይዳስሱ</string>
+    <string name="b">%1$s፣ %2$s</string>
+    <string name="c">%1$s፣ %2$s፣ %3$s</string>
+    <string name="d">ወደ ላይ ይዳስሱ</string>
+    <string name="e">ተጨማሪ አማራጮች</string>
+    <string name="f">ተከናውኗል</string>
+    <string name="g">ሁሉንም ይመልከቱ</string>
+    <string name="h">መተግበሪያ ይምረጡ</string>
+    <string name="i">ጠፍቷል</string>
+    <string name="j">በርቷል</string>
+    <string name="k">ፈልግ…</string>
+    <string name="l">መጠይቅ አጽዳ</string>
+    <string name="m">የፍለጋ ጥያቄ</string>
+    <string name="n">ፍለጋ</string>
+    <string name="o">መጠይቅ ያስረክቡ</string>
+    <string name="p">የድምፅ ፍለጋ</string>
+    <string name="q">ከሚከተለው ጋር ያጋሩ</string>
+    <string name="r">ከ%s ጋር ያጋሩ</string>
+    <string name="s">ሰብስብ</string>
+    <string name="t">ፈልግ</string>
+    <string name="u">999+</string>
+</resources>

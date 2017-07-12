@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Zur Startseite</string>
+    <string name="b">%1$s: %2$s</string>
+    <string name="c">%1$s, %2$s: %3$s</string>
+    <string name="d">Nach oben</string>
+    <string name="e">Weitere Optionen</string>
+    <string name="f">Fertig</string>
+    <string name="g">Alle ansehen</string>
+    <string name="h">App auswählen</string>
+    <string name="i">Aus</string>
+    <string name="j">An</string>
+    <string name="k">Suchen…</string>
+    <string name="l">Suchanfrage löschen</string>
+    <string name="m">Suchanfrage</string>
+    <string name="n">Suchen</string>
+    <string name="o">Suchanfrage senden</string>
+    <string name="p">Sprachsuche</string>
+    <string name="q">Freigeben für</string>
+    <string name="r">Freigeben für %s</string>
+    <string name="s">Minimieren</string>
+    <string name="t">Suchen</string>
+    <string name="u">999+</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">转到主屏幕</string>
+    <string name="b">%1$s：%2$s</string>
+    <string name="c">%1$s - %2$s：%3$s</string>
+    <string name="d">转到上一层级</string>
+    <string name="e">更多选项</string>
+    <string name="f">完成</string>
+    <string name="g">查看全部</string>
+    <string name="h">选择应用</string>
+    <string name="i">关闭</string>
+    <string name="j">开启</string>
+    <string name="k">搜索…</string>
+    <string name="l">清除查询</string>
+    <string name="m">搜索查询</string>
+    <string name="n">搜索</string>
+    <string name="o">提交查询</string>
+    <string name="p">语音搜索</string>
+    <string name="q">分享方式</string>
+    <string name="r">通过%s分享</string>
+    <string name="s">收起</string>
+    <string name="t">搜索</string>
+    <string name="u">999+</string>
+</resources>

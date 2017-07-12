@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">"Navega a la pàgina d'inici"</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Navega cap a dalt</string>
+    <string name="e">Més opcions</string>
+    <string name="f">Fet</string>
+    <string name="g">"Mostra'ls tots"</string>
+    <string name="h">Selecciona una aplicació</string>
+    <string name="i">DESACTIVAT</string>
+    <string name="j">ACTIVAT</string>
+    <string name="k">Cerca...</string>
+    <string name="l">Esborra la consulta</string>
+    <string name="m">Consulta de cerca</string>
+    <string name="n">Cerca</string>
+    <string name="o">Envia la consulta</string>
+    <string name="p">Cerca per veu</string>
+    <string name="q">Comparteix amb</string>
+    <string name="r">Comparteix amb %s</string>
+    <string name="s">Replega</string>
+    <string name="t">Cerca</string>
+    <string name="u">+999</string>
+</resources>

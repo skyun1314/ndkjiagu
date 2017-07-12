@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Navigeren naar startpositie</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Omhoog navigeren</string>
+    <string name="e">Meer opties</string>
+    <string name="f">Gereed</string>
+    <string name="g">Alles weergeven</string>
+    <string name="h">Een app selecteren</string>
+    <string name="i">UIT</string>
+    <string name="j">AAN</string>
+    <string name="k">Zoeken…</string>
+    <string name="l">Zoekopdracht wissen</string>
+    <string name="m">Zoekopdracht</string>
+    <string name="n">Zoeken</string>
+    <string name="o">Zoekopdracht verzenden</string>
+    <string name="p">Gesproken zoekopdracht</string>
+    <string name="q">Delen met</string>
+    <string name="r">Delen met %s</string>
+    <string name="s">Samenvouwen</string>
+    <string name="t">Zoeken</string>
+    <string name="u">999+</string>
+</resources>

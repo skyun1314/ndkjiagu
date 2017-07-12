@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="a">48.0dip</dimen>
+    <dimen name="b">56.0dip</dimen>
+    <dimen name="c">40.0dip</dimen>
+    <dimen name="d">16.0dip</dimen>
+    <dimen name="e">20.0dip</dimen>
+    <dimen name="f">320.0dip</dimen>
+    <item type="dimen" name="g">79.99999%</item>
+    <item type="dimen" name="h">100.0%</item>
+    <dimen name="i">320.0dip</dimen>
+    <dimen name="j">320.0dip</dimen>
+    <item type="dimen" name="k">65.0%</item>
+    <item type="dimen" name="l">95.00001%</item>
+    <dimen name="m">16.0dip</dimen>
+    <dimen name="n">72.0dip</dimen>
+    <dimen name="o">0.0dip</dimen>
+    <dimen name="p">0.0dip</dimen>
+    <dimen name="q">2.0dip</dimen>
+    <dimen name="r">3.0dip</dimen>
+    <dimen name="s">8.0dip</dimen>
+    <dimen name="t">10.0dip</dimen>
+    <item type="dimen" name="u">@dimen/s</item>
+    <dimen name="v">4.0dip</dimen>
+    <dimen name="w">16.0dip</dimen>
+    <dimen name="x">10.0dip</dimen>
+    <dimen name="y">6.0dip</dimen>
+    <dimen name="z">48.0dip</dimen>
+    <dimen name="a0">180.0dip</dimen>
+    <dimen name="a1">5.0dip</dimen>
+    <dimen name="a2">-3.0dip</dimen>
+    <dimen name="a3">48.0dip</dimen>
+    <dimen name="a4">48.0dip</dimen>
+    <dimen name="a5">36.0dip</dimen>
+    <item type="dimen" name="a6">@dimen/ab</item>
+    <dimen name="a7">6.0dip</dimen>
+    <dimen name="a8">8.0dip</dimen>
+    <item type="dimen" name="a9">@dimen/ac</item>
+    <dimen name="a_">720.0dip</dimen>
+    <dimen name="aa">2.0dip</dimen>
+    <dimen name="ab">4.0dip</dimen>
+    <dimen name="ac">4.0dip</dimen>
+    <dimen name="ad">8.0dip</dimen>
+    <dimen name="ae">8.0dip</dimen>
+    <dimen name="af">24.0dip</dimen>
+    <dimen name="ag">18.0dip</dimen>
+    <dimen name="ah">8.0dip</dimen>
+    <item type="dimen" name="ai">0.3</item>
+    <item type="dimen" name="aj">0.26</item>
+    <dimen name="ak">32.0dip</dimen>
+    <dimen name="al">8.0dip</dimen>
+    <dimen name="am">8.0dip</dimen>
+    <dimen name="an">7.0dip</dimen>
+    <dimen name="ao">4.0dip</dimen>
+    <dimen name="ap">10.0dip</dimen>
+    <dimen name="aq">16.0dip</dimen>
+    <item type="dimen" name="ar">@dimen/m</item>
+    <dimen name="as">296.0dip</dimen>
+    <dimen name="at">4.0dip</dimen>
+    <dimen name="au">48.0dip</dimen>
+    <dimen name="av">320.0dip</dimen>
+    <dimen name="aw">2.0dip</dimen>
+    <dimen name="ax">2.0dip</dimen>
+    <dimen name="ay">20.0dip</dimen>
+    <dimen name="az">14.0sp</dimen>
+    <dimen name="b0">14.0sp</dimen>
+    <dimen name="b1">14.0sp</dimen>
+    <dimen name="b2">12.0sp</dimen>
+    <dimen name="b3">34.0sp</dimen>
+    <dimen name="b4">45.0sp</dimen>
+    <dimen name="b5">56.0sp</dimen>
+    <dimen name="b6">112.0sp</dimen>
+    <dimen name="b7">24.0sp</dimen>
+    <dimen name="b8">22.0sp</dimen>
+    <dimen name="b9">18.0sp</dimen>
+    <dimen name="b_">14.0sp</dimen>
+    <dimen name="ba">16.0sp</dimen>
+    <dimen name="bb">14.0sp</dimen>
+    <dimen name="bc">16.0sp</dimen>
+    <dimen name="bd">20.0sp</dimen>
+    <item type="dimen" name="be">0.3</item>
+    <item type="dimen" name="bf">0.26</item>
+    <item type="dimen" name="bg">0.26</item>
+    <item type="dimen" name="bh">0.2</item>
+    <item type="dimen" name="bi">0.12</item>
+    <item type="dimen" name="bj">0.5</item>
+    <item type="dimen" name="bk">0.38</item>
+    <item type="dimen" name="bl">0.7</item>
+    <item type="dimen" name="bm">0.54</item>
+    <dimen name="bn">32.0dip</dimen>
+    <dimen name="bo">13.0sp</dimen>
+    <dimen name="bp">12.0dip</dimen>
+    <dimen name="bq">64.0dip</dimen>
+    <dimen name="br">64.0dip</dimen>
+    <dimen name="bs">16.0dip</dimen>
+    <dimen name="bt">3.0dip</dimen>
+    <dimen name="bu">24.0dip</dimen>
+    <dimen name="bv">13.0sp</dimen>
+    <dimen name="bw">10.0dip</dimen>
+    <dimen name="bx">5.0dip</dimen>
+</resources>

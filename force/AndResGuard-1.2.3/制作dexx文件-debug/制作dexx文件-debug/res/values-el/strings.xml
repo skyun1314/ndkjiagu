@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Πλοήγηση στην αρχική σελίδα</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Πλοήγηση προς τα επάνω</string>
+    <string name="e">Περισσότερες επιλογές</string>
+    <string name="f">Τέλος</string>
+    <string name="g">Προβολή όλων</string>
+    <string name="h">Επιλέξτε κάποια εφαρμογή</string>
+    <string name="i">ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ</string>
+    <string name="j">ΕΝΕΡΓΟΠΟΙΗΣΗ</string>
+    <string name="k">Αναζήτηση…</string>
+    <string name="l">Διαγραφή ερωτήματος</string>
+    <string name="m">Ερώτημα αναζήτησης</string>
+    <string name="n">Αναζήτηση</string>
+    <string name="o">Υποβολή ερωτήματος</string>
+    <string name="p">Φωνητική αναζήτηση</string>
+    <string name="q">Κοινή χρήση με</string>
+    <string name="r">Κοινή χρήση με %s</string>
+    <string name="s">Σύμπτυξη</string>
+    <string name="t">Αναζήτηση</string>
+    <string name="u">999+</string>
+</resources>

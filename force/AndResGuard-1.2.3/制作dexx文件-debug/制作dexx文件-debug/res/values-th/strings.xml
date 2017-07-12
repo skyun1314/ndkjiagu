@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">นำทางไปหน้าแรก</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">นำทางขึ้น</string>
+    <string name="e">ตัวเลือกอื่น</string>
+    <string name="f">เสร็จสิ้น</string>
+    <string name="g">ดูทั้งหมด</string>
+    <string name="h">เลือกแอป</string>
+    <string name="i">ปิด</string>
+    <string name="j">เปิด</string>
+    <string name="k">ค้นหา…</string>
+    <string name="l">ล้างข้อความค้นหา</string>
+    <string name="m">ข้อความค้นหา</string>
+    <string name="n">ค้นหา</string>
+    <string name="o">ส่งข้อความค้นหา</string>
+    <string name="p">ค้นหาด้วยเสียง</string>
+    <string name="q">แชร์กับ</string>
+    <string name="r">แชร์กับ %s</string>
+    <string name="s">ยุบ</string>
+    <string name="t">ค้นหา</string>
+    <string name="u">999+</string>
+</resources>

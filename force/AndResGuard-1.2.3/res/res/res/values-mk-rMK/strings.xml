@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Движи се кон дома</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Движи се нагоре</string>
+    <string name="e">Повеќе опции</string>
+    <string name="f">Готово</string>
+    <string name="g">Види ги сите</string>
+    <string name="h">Избери апликација</string>
+    <string name="i">ИСКЛУЧЕНО</string>
+    <string name="j">ВКЛУЧЕНО</string>
+    <string name="k">Пребарување…</string>
+    <string name="l">Исчисти барање</string>
+    <string name="m">Пребарај барање</string>
+    <string name="n">Пребарај</string>
+    <string name="o">Поднеси барање</string>
+    <string name="p">Гласовно пребарување</string>
+    <string name="q">Сподели со</string>
+    <string name="s">Собери</string>
+    <string name="t">Пребарај</string>
+    <string name="u">999+</string>
+</resources>

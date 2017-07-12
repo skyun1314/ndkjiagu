@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Navegar para a página inicial</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Navegar para cima</string>
+    <string name="e">Mais opções</string>
+    <string name="f">Concluído</string>
+    <string name="g">Ver tudo</string>
+    <string name="h">Selecione um app</string>
+    <string name="i">DESATIVAR</string>
+    <string name="j">ATIVAR</string>
+    <string name="k">Pesquisar...</string>
+    <string name="l">Limpar consulta</string>
+    <string name="m">Consulta de pesquisa</string>
+    <string name="n">Pesquisar</string>
+    <string name="o">Enviar consulta</string>
+    <string name="p">Pesquisa por voz</string>
+    <string name="q">Compartilhar com</string>
+    <string name="r">Compartilhar com %s</string>
+    <string name="s">Recolher</string>
+    <string name="t">Pesquisar</string>
+    <string name="u">999+</string>
+</resources>

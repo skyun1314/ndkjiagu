@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">ਹੋਮ ਨੈਵੀਗੇਟ ਕਰੋ</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">ਉੱਪਰ ਨੈਵੀਗੇਟ ਕਰੋ</string>
+    <string name="e">ਹੋਰ ਚੋਣਾਂ</string>
+    <string name="f">ਹੋ ਗਿਆ</string>
+    <string name="g">ਸਭ ਦੇਖੋ</string>
+    <string name="h">ਇੱਕ ਐਪ ਚੁਣੋ</string>
+    <string name="i">ਬੰਦ</string>
+    <string name="j">ਤੇ</string>
+    <string name="k">ਖੋਜ…</string>
+    <string name="l">ਸਵਾਲ ਹਟਾਓ</string>
+    <string name="m">ਸਵਾਲ ਖੋਜੋ</string>
+    <string name="n">ਖੋਜੋ</string>
+    <string name="o">ਸਵਾਲ ਪ੍ਰਸਤੁਤ ਕਰੋ</string>
+    <string name="p">ਵੌਇਸ ਖੋਜ</string>
+    <string name="q">ਇਸ ਨਾਲ ਸਾਂਝਾ ਕਰੋ</string>
+    <string name="r">%s ਨਾਲ ਸਾਂਝਾ ਕਰੋ</string>
+    <string name="s">ਨਸ਼ਟ ਕਰੋ</string>
+    <string name="t">ਖੋਜ</string>
+    <string name="u">999+</string>
+</resources>

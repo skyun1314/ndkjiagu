@@ -114,7 +114,6 @@ static JNINativeMethod method[] = {
 
 jobject getApplication(JNIEnv *env) {
     jobject application = NULL;
-    be_attached_check();
     jclass activity_thread_clz = env->FindClass("android/app/ActivityThread");
     if (activity_thread_clz != NULL) {
         jmethodID currentApplication = env->GetStaticMethodID(
@@ -310,12 +309,69 @@ void * sub_F0C(const char *a1, char *a2)
 }
 
 
+void  haha(JNIEnv *env){
+
+   /* jclass aClass = env->FindClass("android/app/ActivityThread");
+    jclass aClass1 = env->FindClass("android/app/LoadedApk");
+
+    //String ResPath = context.getFilesDir() + File.separator + "res.zip";
 
 
+    jmethodID currentActivityThread_id = env->GetStaticMethodID( aClass, "currentActivityThread", "()Landroid/app/ActivityThread;");
+    jobject currentActivityThread=env->CallStaticObjectMethod(aClass,currentActivityThread_id);
+
+    jfieldID TAG_id = env->GetStaticFieldID(aClass, "TAG", "Ljava/lang/String;");
+    jstring TAG = (jstring) env->GetStaticObjectField(aClass, TAG_id);
+    char* myTAG= (char *) env->GetStringUTFChars(TAG, false);
+
+    jfieldID mPackages_id = env->GetFieldID(aClass, "mPackages", "Ljava/util/HashMap;");
+    jobject mPackages= env->GetObjectField(currentActivityThread, mPackages_id);
+
+    jmethodID file_get_id=env->GetMethodID(env->FindClass("java/util/Map"),"get","(Ljava/lang/Object;)Ljava/lang/Object;");
+
+    //jobject map=env->CallObjectMethod(mPackages,file_get_id,currentActivityThread);
+
+    jobject  o=env->CallObjectMethod(mPackages,file_get_id,env->NewStringUTF("com.example.nativedex"));
+
+    jmethodID WeakReference_get_id=env->GetMethodID(env->FindClass("java/lang/ref"),"get","()Ljava/lang/Object;");
+
+
+
+    jobject loadedapk=env->CallObjectMethod(o,WeakReference_get_id);
+
+    jfieldID mResDir_id = env->GetFieldID(aClass1, "mResDir", "Ljava/lang/String;");
+
+
+    env->GetObjectField(o, mResDir_id);
+   // mResDir.set(loadedapk,ResPath);*/
+}
+
+jobject getGlobalContext(JNIEnv *env) {
+    jclass activityThread = env->FindClass( "android/app/ActivityThread");
+
+    jmethodID currentActivityThread = env->GetStaticMethodID( activityThread, "currentActivityThread", "()Landroid/app/ActivityThread;");
+
+    jobject at = env->CallStaticObjectMethod( activityThread, currentActivityThread);
+
+    jmethodID getApplication = env->GetMethodID( activityThread, "getApplication", "()Landroid/app/Application;");
+
+    jobject context = env->CallObjectMethod( at, getApplication);
+
+    return context;
+}
+
+void haha2(JNIEnv *env){
+    jclass MyDexClassLoader = env->FindClass("com/example/nativedex/MyDexClassLoader");
+    jmethodID haha1=env->GetStaticMethodID(MyDexClassLoader,"haha1","()V");
+    jobject jobject1=getGlobalContext(env);
+    env->CallStaticVoidMethod(MyDexClassLoader,haha1);
+}
 
 
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+
+
 
     for (int i = 0; i < strlen(sings); ++i) {
         strsings[i]=sings[i];
@@ -327,6 +383,9 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
         return result;
     }
+
+   // haha2(env);
+
     getApplication(env);
     jclass jclass1 = FindCLass( env,"com/example/nativedex/MyDexClassLoader");
     int ret =  RegisterNative(env,jclass1, method, 1);

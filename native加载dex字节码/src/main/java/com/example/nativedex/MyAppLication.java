@@ -6,17 +6,19 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,52 +54,41 @@ public class MyAppLication extends Application {
 
         byte[] bytes1 = readDexFileFromApk();
 
-        byte[] size = getSizeByoff(bytes1, 4, bytes1.length - 4);
 
-
-        int dexSize = bytesToInt(size);
 
         byte[] sizeByoff;
-
+        byte[] assets_byte=null;
         if (getPackageName().equals("com.example.nativedex")) {
             sizeByoff = FileUtil.copyDexToByte("classes.dex", this);
+
+
+            FileUtil.copyDex("res.zip", this);
+
+
         } else {
+            byte[] size = getSizeByoff(bytes1, 4, bytes1.length - 4);
+            int dexSize = bytesToInt(size);
             sizeByoff = getSizeByoff(bytes1, dexSize, bytes1.length - 4 - dexSize);
             sizeByoff = decrpt(sizeByoff);
-        }
-
-        byte[] assets_size = getSizeByoff(bytes1, 4, bytes1.length - 4 - dexSize - 4);
-        int assets_dexSize = bytesToInt(assets_size);
-        byte[] assets_byte = getSizeByoff(bytes1, assets_dexSize, bytes1.length - 4 - dexSize - 4 - assets_dexSize);
-
-        assets_byte = decrpt(assets_byte);
 
 
-        BufferedOutputStream bos = null;
-        FileOutputStream fos = null;
-        try {
-            File f = new File(getFilesDir() + File.separator + "res.zip");
-              fos = new FileOutputStream(f);
-             bos = new BufferedOutputStream(fos);
-            bos.write(assets_byte);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+            byte[] assets_size = getSizeByoff(bytes1, 4, bytes1.length - 4 - dexSize - 4);
+            int assets_dexSize = bytesToInt(assets_size);
+            assets_byte = getSizeByoff(bytes1, assets_dexSize, bytes1.length - 4 - dexSize - 4 - assets_dexSize);
+            assets_byte = decrpt(assets_byte);
+            try {
+                File f = new File(getFilesDir() + File.separator + "res.zip");
+                FileOutputStream  fos = new FileOutputStream(f);
+                BufferedOutputStream    bos = new BufferedOutputStream(fos);
+                bos.write(assets_byte);
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
+
+
 
 
             //Log.e("wodelog","\ndex:"+bytesToHexString(sizeByoff));
@@ -121,6 +112,7 @@ public class MyAppLication extends Application {
     public void onCreate() {
         super.onCreate();
         getOldAppCation();
+
     }
 
     private byte[] readDexFileFromApk() {
@@ -242,7 +234,7 @@ public class MyAppLication extends Application {
 
 
         //有值的话调用该Applicaiton
-        Object currentActivityThread = invokeStaticMethod("android.app.ActivityThread", "currentActivityThread", new Class[]{}, new Object[]{});
+        Object currentActivityThread = invokeDeclaredStaticMethod("android.app.ActivityThread", "currentActivityThread", new Class[]{}, new Object[]{});
 
 
         Object mBoundApplication = getFieldOjbect(
@@ -256,7 +248,7 @@ public class MyAppLication extends Application {
         //把当前进程的mApplication 设置成了null
 
 
-        setFieldOjbect("android.app.LoadedApk", "mApplication",
+        setDeclaredFieldOjbect("android.app.LoadedApk", "mApplication",
                 loadedApkInfo, null);
 
 
@@ -281,7 +273,7 @@ public class MyAppLication extends Application {
                 "android.app.LoadedApk", "makeApplication", loadedApkInfo,
                 new Class[]{boolean.class, Instrumentation.class},
                 new Object[]{false, null});//执行 makeApplication（false,null）
-        setFieldOjbect("android.app.ActivityThread",
+        setDeclaredFieldOjbect("android.app.ActivityThread",
                 "mInitialApplication", currentActivityThread, app);
 
 
@@ -294,7 +286,7 @@ public class MyAppLication extends Application {
             Object localProvider = getFieldOjbect(
                     "android.app.ActivityThread$ProviderClientRecord",
                     providerClientRecord, "mLocalProvider");
-            setFieldOjbect("android.content.ContentProvider",
+            setDeclaredFieldOjbect("android.content.ContentProvider",
                     "mContext", localProvider, app);
         }
 
@@ -304,7 +296,7 @@ public class MyAppLication extends Application {
     }
 
 
-    public static Object invokeStaticMethod(String class_name, String method_name, Class[] pareTyple, Object[] pareVaules) {
+    public static Object invokeDeclaredMethod(String class_name, String method_name, Class[] pareTyple, Object[] pareVaules,Object obj) {
 
         try {
 
@@ -314,7 +306,7 @@ public class MyAppLication extends Application {
 
             Method method = obj_class.getDeclaredMethod(method_name, pareTyple);
             method.setAccessible(true);
-            return method.invoke(null, pareVaules);
+            return method.invoke(obj, pareVaules);
         } catch (Exception e) {
             Log.i("jw", "invoke static method:" + Log.getStackTraceString(e));
         }
@@ -322,19 +314,6 @@ public class MyAppLication extends Application {
 
     }
 
-    public static Object invokeDeclaredStaticMethod(String class_name, String method_name, Class[] pareTyple, Object[] pareVaules) {
-
-        try {
-            Class obj_class = Class.forName(class_name);
-            Method method = obj_class.getDeclaredMethod(method_name, pareTyple);
-            method.setAccessible(true);
-            return method.invoke(null, pareVaules);
-        } catch (Exception e) {
-            Log.i("jw", "invoke static method:" + Log.getStackTraceString(e));
-        }
-        return null;
-
-    }
 
     public static Object invokeMethod(String class_name, String method_name, Object obj, Class[] pareTyple, Object[] pareVaules) {
 
@@ -345,6 +324,21 @@ public class MyAppLication extends Application {
             return method.invoke(obj, pareVaules);
         } catch (Exception e) {
             Log.i("jw", "invoke method :" + Log.getStackTraceString(e));
+        }
+        return null;
+
+    }
+
+
+    public static Object invokeDeclaredStaticMethod(String class_name, String method_name, Class[] pareTyple, Object[] pareVaules) {
+
+        try {
+            Class obj_class = Class.forName(class_name);
+            Method method = obj_class.getDeclaredMethod(method_name, pareTyple);
+            method.setAccessible(true);
+            return method.invoke(null, pareVaules);
+        } catch (Exception e) {
+            Log.i("jw", "invoke static method:" + Log.getStackTraceString(e));
         }
         return null;
 
@@ -364,7 +358,21 @@ public class MyAppLication extends Application {
 
     }
 
-    public static Object getStaticFieldOjbect(String class_name, String filedName) {
+    public static void setDeclaredFieldOjbect(String classname, String filedName, Object obj, Object filedVaule) {
+        try {
+            Class obj_class = Class.forName(classname);
+            Field field = obj_class.getDeclaredField(filedName);
+            field.setAccessible(true);
+            field.set(obj, filedVaule);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /*    */
+
+/*    public static Object getStaticFieldOjbect(String class_name, String filedName) {
 
         try {
             Class obj_class = Class.forName(class_name);
@@ -377,21 +385,11 @@ public class MyAppLication extends Application {
         }
         return null;
 
-    }
+    }*/
 
-    public static void setFieldOjbect(String classname, String filedName, Object obj, Object filedVaule) {
-        try {
-            Class obj_class = Class.forName(classname);
-            Field field = obj_class.getDeclaredField(filedName);
-            field.setAccessible(true);
-            field.set(obj, filedVaule);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
-    public static void setStaticOjbect(String class_name, String filedName, Object filedVaule) {
+
+/*    public static void setStaticOjbect(String class_name, String filedName, Object filedVaule) {
         try {
             Class obj_class = Class.forName(class_name);
             Field field = obj_class.getDeclaredField(filedName);
@@ -401,6 +399,52 @@ public class MyAppLication extends Application {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }*/
+
+
+    public static String getFromAssets(String fileName, Context context, Resources resources){
+        try {
+            InputStreamReader inputReader;
+            if (resources==null){
+                inputReader = new InputStreamReader(context.getResources()
+                        .getAssets().open(fileName) );
+            }
+            else{
+                inputReader = new InputStreamReader(resources.getAssets().open(fileName) );
+            }
+
+
+
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line="";
+            String Result="";
+            while((line = bufReader.readLine()) != null)
+                Result += line;
+            return Result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
+
+    public static String getFromRaw(int id,Resources resources){
+        try {
+            InputStreamReader inputReader = new InputStreamReader(resources.openRawResource(id));
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line="";
+            String Result="";
+            while((line = bufReader.readLine()) != null)
+                Result += line;
+            return Result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
+
 
 }

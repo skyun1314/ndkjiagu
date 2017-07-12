@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="b" parent="@style/dc" />
+    <style name="c" parent="@style/de" />
+</resources>

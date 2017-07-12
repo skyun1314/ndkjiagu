@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="e" parent="@style/fn" />
+    <style name="f" parent="@style/fn" />
+    <style name="g" parent="@style/fp" />
+    <style name="h" parent="@style/fq" />
+    <style name="i" parent="@style/fr" />
+    <style name="j" parent="@style/fs" />
+    <style name="k" parent="@style/g0" />
+</resources>

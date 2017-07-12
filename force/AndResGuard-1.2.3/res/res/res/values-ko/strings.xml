@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">홈 탐색</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">위로 탐색</string>
+    <string name="e">옵션 더보기</string>
+    <string name="f">완료</string>
+    <string name="g">전체 보기</string>
+    <string name="h">앱 선택</string>
+    <string name="i">사용 안함</string>
+    <string name="j">사용</string>
+    <string name="k">검색...</string>
+    <string name="l">검색어 삭제</string>
+    <string name="m">검색어</string>
+    <string name="n">검색</string>
+    <string name="o">검색어 보내기</string>
+    <string name="p">음성 검색</string>
+    <string name="q">공유 대상</string>
+    <string name="r">%s와(과) 공유</string>
+    <string name="s">접기</string>
+    <string name="t">검색</string>
+    <string name="u">999+</string>
+</resources>

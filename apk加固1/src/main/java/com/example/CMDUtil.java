@@ -37,7 +37,7 @@ public class CMDUtil {
             String line=null;
             while ((line=br.readLine())!=null){
                 System.out.println(line);
-                界面.TextViewSHow(line);
+                Main_JiaGu.TextViewSHow(line);
             }
 
             if (br==null){

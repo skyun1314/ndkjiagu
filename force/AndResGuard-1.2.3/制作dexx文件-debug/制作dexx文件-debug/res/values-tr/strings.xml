@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Ana ekrana git</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Yukarı git</string>
+    <string name="e">Diğer seçenekler</string>
+    <string name="f">Bitti</string>
+    <string name="g">Tümünü göster</string>
+    <string name="h">Bir uygulama seçin</string>
+    <string name="i">KAPAT</string>
+    <string name="j">AÇ</string>
+    <string name="k">Ara…</string>
+    <string name="l">Sorguyu temizle</string>
+    <string name="m">Arama sorgusu</string>
+    <string name="n">Ara</string>
+    <string name="o">Sorguyu gönder</string>
+    <string name="p">Sesli arama</string>
+    <string name="q">Şununla paylaş</string>
+    <string name="r">%s ile paylaş</string>
+    <string name="s">Daralt</string>
+    <string name="t">Ara</string>
+    <string name="u">999+</string>
+</resources>

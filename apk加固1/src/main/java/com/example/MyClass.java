@@ -49,7 +49,7 @@ public class MyClass {
 
     public static void jiagu(String strNmae){
         System.out.println("开始加固");
-        界面.TextViewSHow("开始加固\n");
+        Main_JiaGu.TextViewSHow("开始加固\n");
 
         AndRes(strNmae);
 
@@ -100,9 +100,9 @@ public class MyClass {
         String signs = "jarsigner -verbose -keystore /Users/zk/Desktop/kai.keystore -storepass 111111 -keypass 111111 -signedjar  " + path + "signed.apk " + path + "/dist/"+"one_"+appname + " kai.keystore -digestalg SHA1 -sigalg MD5withRSA";
         CMDUtil.runCMD(signs);
         CMDUtil.runCMD("rm -rf "+path);
-        界面.TextViewSHow("\n加固完成");
-        界面.TextViewSHow("\n加固完成");
-        界面.TextViewSHow("\n加固完成");
+        Main_JiaGu.TextViewSHow("\n加固完成");
+        Main_JiaGu.TextViewSHow("\n加固完成");
+        Main_JiaGu.TextViewSHow("\n加固完成");
     }
 
 

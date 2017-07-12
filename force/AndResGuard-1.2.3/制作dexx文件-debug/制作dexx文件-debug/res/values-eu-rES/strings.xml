@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">Joan orri nagusira</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">Joan gora</string>
+    <string name="e">Aukera gehiago</string>
+    <string name="f">Eginda</string>
+    <string name="g">Ikusi guztiak</string>
+    <string name="h">Aukeratu aplikazio bat</string>
+    <string name="i">DESAKTIBATUTA</string>
+    <string name="j">AKTIBATUTA</string>
+    <string name="k">Bilatu…</string>
+    <string name="l">Garbitu kontsulta</string>
+    <string name="m">Bilaketa-kontsulta</string>
+    <string name="n">Bilatu</string>
+    <string name="o">Bidali kontsulta</string>
+    <string name="p">Ahots bidezko bilaketa</string>
+    <string name="q">Partekatu hauekin</string>
+    <string name="r">Partekatu %s erabiltzailearekin</string>
+    <string name="s">Tolestu</string>
+    <string name="t">Bilatu</string>
+    <string name="u">999+</string>
+</resources>

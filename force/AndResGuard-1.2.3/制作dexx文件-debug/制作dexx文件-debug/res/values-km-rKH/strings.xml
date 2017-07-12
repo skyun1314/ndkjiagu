@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">រកមើល​ទៅ​ដើម</string>
+    <string name="b">%1$s, %2$s</string>
+    <string name="c">%1$s, %2$s, %3$s</string>
+    <string name="d">រកមើល​ឡើងលើ</string>
+    <string name="e">ជម្រើស​ច្រើន​ទៀត</string>
+    <string name="f">រួចរាល់</string>
+    <string name="g">មើល​ទាំងអស់</string>
+    <string name="h">ជ្រើស​កម្មវិធី​​</string>
+    <string name="i">បិទ</string>
+    <string name="j">បើក</string>
+    <string name="k">ស្វែងរក…</string>
+    <string name="l">សម្អាត​សំណួរ</string>
+    <string name="m">ស្វែងរក​សំណួរ</string>
+    <string name="n">ស្វែងរក</string>
+    <string name="o">ដាក់​​​ស្នើ​សំណួរ</string>
+    <string name="p">ការស្វែងរក​សំឡេង</string>
+    <string name="q">ចែករំលែក​ជាមួយ</string>
+    <string name="r">ចែករំលែក​ជាមួយ %s</string>
+    <string name="s">បង្រួម</string>
+    <string name="t">ស្វែងរក</string>
+    <string name="u">999+</string>
+</resources>

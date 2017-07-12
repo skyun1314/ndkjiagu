@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="a">瀏覽主頁</string>
+    <string name="b">%1$s：%2$s</string>
+    <string name="c">%1$s (%2$s)：%3$s</string>
+    <string name="d">向上瀏覽</string>
+    <string name="e">更多選項</string>
+    <string name="f">完成</string>
+    <string name="g">顯示全部</string>
+    <string name="h">選擇應用程式</string>
+    <string name="i">關閉</string>
+    <string name="j">開啟</string>
+    <string name="k">搜尋…</string>
+    <string name="l">清除查詢</string>
+    <string name="m">搜尋查詢</string>
+    <string name="n">搜尋</string>
+    <string name="o">提交查詢</string>
+    <string name="p">語音搜尋</string>
+    <string name="q">分享對象</string>
+    <string name="r">與「%s」分享</string>
+    <string name="s">收合</string>
+    <string name="t">搜尋</string>
+    <string name="u">999 +</string>
+</resources>
