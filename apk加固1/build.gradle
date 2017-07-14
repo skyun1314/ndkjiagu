@@ -5,18 +5,6 @@ dependencies {
     compile files('libs/dom4j-2.0.1.jar')
 }
 
-task deleteOldJar(type: Delete) {
-    delete 'build/outputs/test.jar'
-}
-
-task exportJar(type: Copy) {
-    from('build/classes/main/com/example/')
-    into('build/libs/')
-    include('dom4j-2.0.1.jar')
-    rename ('classes.jar', 'test.jar')
-}
-
-exportJar.dependsOn(deleteOldJar, build)
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"

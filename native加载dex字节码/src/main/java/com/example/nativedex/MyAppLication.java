@@ -56,10 +56,12 @@ public class MyAppLication extends Application {
 
 
 
-        byte[] sizeByoff;
+        byte[] dexByte;
+        String  dexPath = null;
         byte[] assets_byte=null;
         if (getPackageName().equals("com.example.nativedex")) {
-            sizeByoff = FileUtil.copyDexToByte("classes.dex", this);
+            dexByte = FileUtil.copyDexToByte("classes.dex", this);
+            dexPath = FileUtil.copyDex("classes.dex", this);
 
 
             FileUtil.copyDex("res.zip", this);
@@ -68,10 +70,9 @@ public class MyAppLication extends Application {
         } else {
             byte[] size = getSizeByoff(bytes1, 4, bytes1.length - 4);
             int dexSize = bytesToInt(size);
-            sizeByoff = getSizeByoff(bytes1, dexSize, bytes1.length - 4 - dexSize);
-            sizeByoff = decrpt(sizeByoff);
-
-
+            dexByte = getSizeByoff(bytes1, dexSize, bytes1.length - 4 - dexSize);
+            dexByte = decrpt(dexByte);
+            dexPath= getPackageResourcePath();
             byte[] assets_size = getSizeByoff(bytes1, 4, bytes1.length - 4 - dexSize - 4);
             int assets_dexSize = bytesToInt(assets_size);
             assets_byte = getSizeByoff(bytes1, assets_dexSize, bytes1.length - 4 - dexSize - 4 - assets_dexSize);
@@ -90,7 +91,6 @@ public class MyAppLication extends Application {
 
 
 
-
             //Log.e("wodelog","\ndex:"+bytesToHexString(sizeByoff));
 
 
@@ -98,8 +98,8 @@ public class MyAppLication extends Application {
 
         myDexClassLoader = new MyDexClassLoader(
                 this,
-                sizeByoff,
-                getPackageResourcePath(),
+                dexByte,
+                dexPath,// getPackageResourcePath(),
                 getDir(".dex", MODE_PRIVATE).getAbsolutePath(),
                 null,
                 getClassLoader()
@@ -273,6 +273,7 @@ public class MyAppLication extends Application {
                 "android.app.LoadedApk", "makeApplication", loadedApkInfo,
                 new Class[]{boolean.class, Instrumentation.class},
                 new Object[]{false, null});//执行 makeApplication（false,null）
+
         setDeclaredFieldOjbect("android.app.ActivityThread",
                 "mInitialApplication", currentActivityThread, app);
 

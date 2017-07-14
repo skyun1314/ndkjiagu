@@ -10,15 +10,16 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import dalvik.system.DexClassLoader;
+import dalvik.system.DexFile;
 
 import static com.example.nativedex.MyAppLication.getFromAssets;
 import static com.example.nativedex.MyAppLication.getFromRaw;
+import static com.example.nativedex.MyAppLication.invokeDeclaredStaticMethod;
 
 /**
  * Created by zk on 2017/6/29.
@@ -29,7 +30,8 @@ public class MyDexClassLoader extends DexClassLoader {
     ClassLoader mClassLoader;
     private int mCookie;
     Context mContext;
-   static Context mContext1;
+    static Context mContext1;
+    private String TAG = "wodelog";
 
     public native int loadDex(byte[] bytes);
 
@@ -38,7 +40,7 @@ public class MyDexClassLoader extends DexClassLoader {
         mClassLoader = parent;
         mCookie = loadDex(dexBytes);
         mContext = context;
-        mContext1=context;
+        mContext1 = context;
     }
 
     public static void enumMethod(String className) {
@@ -66,43 +68,41 @@ public class MyDexClassLoader extends DexClassLoader {
         }
 
     }
+
     public static void enumConstructors(Class userClass) {
 
         //---- 获取所有构造方法
-        Constructor[] cons=userClass.getDeclaredConstructors();
+        Constructor[] cons = userClass.getDeclaredConstructors();
         System.out.println("类User的构造方法包括:  ");
         //---- 打印出构造方法的前缀
-        for (int i=0;i<cons.length;i++)
-        {
-            Constructor con=cons[i];    //取出第i个构造方法。
+        for (int i = 0; i < cons.length; i++) {
+            Constructor con = cons[i];    //取出第i个构造方法。
             System.out.print(Modifier.toString(con.getModifiers()));
             //---- 打印该构造方法的前缀修饰符
-            System.out.print(" "+con.getName()+"(");  //打印该构造方法的名字
+            System.out.print(" " + con.getName() + "(");  //打印该构造方法的名字
             //---- 打印该构造方法的参数。
-            Class[] parameterTypes=con.getParameterTypes();    //构造方法参数集但是 数组类型显示特殊
-            for(int j=0;j<parameterTypes.length;j++)
-            {
-                System.out.print(parameterTypes[j].getName()+",");
+            Class[] parameterTypes = con.getParameterTypes();    //构造方法参数集但是 数组类型显示特殊
+            for (int j = 0; j < parameterTypes.length; j++) {
+                System.out.print(parameterTypes[j].getName() + ",");
             }
             System.out.println(")");
         }
 
-}
+    }
 
 
-    public static void enumFields(Class userClass,Object duixiang) {
+    public static void enumFields(Class userClass, Object duixiang) {
 
         Field[] declaredFields = userClass.getDeclaredFields();
 
-        for (int i=0;i<declaredFields.length;i++)
-        {
-            Field con=declaredFields[i];    //取出第i个构造方法。
+        for (int i = 0; i < declaredFields.length; i++) {
+            Field con = declaredFields[i];    //取出第i个构造方法。
             System.out.print(Modifier.toString(con.getModifiers()));
             //---- 打印该构造方法的前缀修饰符
-            System.out.print(" "+con.getName()+"(");  //打印该构造方法的名字
+            System.out.print(" " + con.getName() + "(");  //打印该构造方法的名字
 
             con.setAccessible(true);
-            if (con.getType()==String.class){
+            if (con.getType() == String.class) {
                 try {
                     String value = (String) con.get(duixiang);
                     System.out.print(value);
@@ -200,11 +200,8 @@ public class MyDexClassLoader extends DexClassLoader {
             Resources mResources_str = (Resources) mResources.get(loadedapk);
 
 
-
-
-
-           mResDir.set(loadedapk,ResPath);
-            mResources.set(loadedapk,loadResources(ResPath,context));
+            mResDir.set(loadedapk, ResPath);
+            mResources.set(loadedapk, loadResources(ResPath, context));
 
             Object classLoader = mClassLoader.get(loadedapk);
             Class clzBaseDexClassLoader = Class.forName("dalvik.system.BaseDexClassLoader");
@@ -245,70 +242,6 @@ public class MyDexClassLoader extends DexClassLoader {
     }
 
 
-    private Method assetManagerMethod(String name, Class<?>... parameterTypes) {
-        try {
-            Method meth = Class.forName("android.content.res.AssetManager")
-                    .getDeclaredMethod(name, parameterTypes);
-            meth.setAccessible(true);
-            return meth;
-        } catch (Exception e) {
-            Log.e("wodelog", "assetManagerMethod", e);
-            return null;
-        }
-    }
-
-    private Field assetManagerField(String name) {
-        try {
-            Field field = Class.forName("android.content.res.AssetManager").getDeclaredField(name);
-            field.setAccessible(true);
-            return field;
-        } catch (Exception e) {
-            Log.e("wodelog",  "assetManagerField", e);
-            return null;
-        }
-    }
-
-
-
-
-
-    public  void ali(String ResPath,Context context){
-
-
-        try {
-            Method initMeth = assetManagerMethod("init");
-            Method destroyMeth = assetManagerMethod("destroy");
-            Method addAssetPathMeth = assetManagerMethod("addAssetPath", String.class);
-            Method list = assetManagerMethod("list", String.class);
-            AssetManager assets = context.getAssets();
-            // %% 析构AssetManager
-            // destroyMeth.invoke(assets);
-            // %% 重新构造AssetManager
-            //initMeth.invoke(assets);
-
-            // %% 置空mStringBlocks
-            //assetManagerField("mStringBlocks").set(assets, null);
-
-            // %% 重新添加原有AssetManager中加载过的资源路径
-            /*for (String path : loadedPaths) {
-                LogTool.d(TAG, "pexyResources" + path);
-                addAssetPathMeth.invoke(am, path);
-            }*/
-
-            // %% 添加patch资源路径
-            addAssetPathMeth.invoke(assets, ResPath);
-
-
-            // %% 重新对mStringBlocks赋值
-            //assetManagerMethod("ensureStringBlocks").invoke(assets);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public Resources loadResources(String resPath, Context context) {
         AssetManager assetManager = null;
         try {
@@ -318,20 +251,67 @@ public class MyDexClassLoader extends DexClassLoader {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Resources  mResources = new Resources(assetManager, context.getResources().getDisplayMetrics(),context.getResources().getConfiguration());
+        Resources mResources = new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
 
         Resources.Theme mTheme = mResources.newTheme();
         mTheme.setTo(context.getTheme());
-        int raw = mResources.getIdentifier("activity_main", "raw","com.example.dexx");
-        Log.e("wodelog","getFromRaw:"+getFromRaw(raw,mResources));
-        Log.e("wodelog","-----------------------------");
-        Log.e("wodelog","getFromAssets:"+ getFromAssets("activity_main.xml",context,mResources));
-        Log.e("wodelog","-----------------------------");
-
-
+        int raw = mResources.getIdentifier("activity_main", "raw", "com.example.dexx");
+        Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
+        Log.e("wodelog", "-----------------------------");
+        Log.e("wodelog", "getFromAssets:" + getFromAssets("activity_main.xml", context, mResources));
+        Log.e("wodelog", "-----------------------------");
 
 
         return mResources;
+    }
+
+
+    private String[] getClassNameList(int cookie) {
+        return (String[]) invokeDeclaredStaticMethod(DexFile.class.getName(),
+                "getClassNameList", new Class[]{int.class},
+                new Object[]{cookie});
+    }
+
+    private Class defineClass(String name, ClassLoader loader, int cookie) {
+        Log.i(TAG, "define class:" + name);
+        return (Class) invokeDeclaredStaticMethod(DexFile.class.getName(),
+                "defineClassNative", new Class[]{String.class, ClassLoader.class,
+                        int.class}, new Object[]{name, loader, cookie});
+    }
+
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        Log.d(TAG, "findClass-" + name);
+        Class<?> cls = null;
+        String as[] = getClassNameList(mCookie);
+        for (int z = 0; z < as.length; z++) {
+            Log.i(TAG, "classname:" + as[z]);
+            if (as[z].equals(name)) {
+                cls = defineClass(as[z].replace('.', '/'),
+                        mContext.getClassLoader(), mCookie);
+            } else {
+                //加载其他类
+                defineClass(as[z].replace('.', '/'), mContext.getClassLoader(),
+                        mCookie);
+            }
+        }
+
+        if (null == cls) {
+            cls = super.findClass(name);
+        }
+
+        return cls;
+    }
+
+    @Override
+    protected Class<?> loadClass(String className, boolean resolve)
+            throws ClassNotFoundException {
+        Log.d(TAG, "loadClass-" + className + " resolve " + resolve);
+        Class<?> clazz = super.loadClass(className, resolve);
+        if (null == clazz) {
+            Log.e(TAG, "loadClass fail,maybe get a null-point exception.");
+        }
+        return clazz;
     }
 
 

@@ -3,14 +3,18 @@
 #include <dlfcn.h>
 #include "Common.h"
 #include "Object.h"
+#include "DSMemDexArt21.h"
 # include <stdlib.h>
 #include <android/log.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include <fcntl.h>
+#include <sys/mman.h>
 char *sings="300201dd30820146020101300d06092a864886f70d010105050030373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b3009060355040613025553301e170d3137303531393136303730335a170d3437303531323136303730335a30373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b300906035504061302555330819f300d06092a864886f70d010101050003818d0030818902818100e334dfc6411e99544a8104e8980678489efa7b1ae3f01982de52f346321d803c6a03cdd4ddeaf63ee89b121cb4d18a452be03839357be83411d03fddb591a63ef524a1619b9623856bc6a29b2e9eb672f972c21d7314a598cf035312af32d4a57a1569d00f5466b8d823a6dcbf07c2ef968401f91b9718823193fac2386ad2890203010001300d06092a864886f70d0101050500038181007a071abf02671a80d13d6188ccb781a2ca0c78b7ffc57b5a9d44a0e022ead87294062229f8667e69b46929aa291d9c387be2d0e579a316f955ed4f404ffa18f425a94e426721531f1de91e1d41ea13f85548ea1556112d053c9ab3e572e05d802d2914680b8bd6da626206b16eb102142736c275ebfbf5285b198b77c8026e49";
 typedef void (*OPEN_DEX_FILE)(const u4 *args, JValue *pResult);
 OPEN_DEX_FILE open_dex_file = NULL;
-
+bool isArt;
 using namespace std;
 char *strsings= (char *) malloc(962);
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,"wodelog", __VA_ARGS__)
@@ -81,9 +85,7 @@ void *GetFunAddr(char *methodName, char *sig) {
 
 }
 
-
-jint loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
-
+jint loadDavlikDex(JNIEnv *env, jbyteArray jbyteArray1){
     jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
     open_dex_file = (OPEN_DEX_FILE) GetFunAddr("openDexFile", "([B)I");
@@ -99,6 +101,35 @@ jint loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
 
     open_dex_file(args, &jResult);
     return jResult.i;
+}
+
+ const void* OpenDexFileNativeCallbackImpl()
+{
+
+    int fd = open("/sdcard/classes.dex", O_RDONLY);
+    size_t fs = lseek(fd, 0, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+
+    void *pMap = mmap(0, fs, PROT_READ, MAP_SHARED, fd, 0);
+
+    const void* cookie = DSMemDexArt21::LoadByte((const char*)pMap, fs);
+
+    //close(fd);
+
+    return cookie;
+}
+
+
+
+
+void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
+
+    if (isArt){
+        return (void *) OpenDexFileNativeCallbackImpl();
+    }else{
+       return (void *) loadDavlikDex(env, jbyteArray1);
+    }
+
 }
 
 static JNINativeMethod method[] = {
@@ -309,42 +340,6 @@ void * sub_F0C(const char *a1, char *a2)
 }
 
 
-void  haha(JNIEnv *env){
-
-   /* jclass aClass = env->FindClass("android/app/ActivityThread");
-    jclass aClass1 = env->FindClass("android/app/LoadedApk");
-
-    //String ResPath = context.getFilesDir() + File.separator + "res.zip";
-
-
-    jmethodID currentActivityThread_id = env->GetStaticMethodID( aClass, "currentActivityThread", "()Landroid/app/ActivityThread;");
-    jobject currentActivityThread=env->CallStaticObjectMethod(aClass,currentActivityThread_id);
-
-    jfieldID TAG_id = env->GetStaticFieldID(aClass, "TAG", "Ljava/lang/String;");
-    jstring TAG = (jstring) env->GetStaticObjectField(aClass, TAG_id);
-    char* myTAG= (char *) env->GetStringUTFChars(TAG, false);
-
-    jfieldID mPackages_id = env->GetFieldID(aClass, "mPackages", "Ljava/util/HashMap;");
-    jobject mPackages= env->GetObjectField(currentActivityThread, mPackages_id);
-
-    jmethodID file_get_id=env->GetMethodID(env->FindClass("java/util/Map"),"get","(Ljava/lang/Object;)Ljava/lang/Object;");
-
-    //jobject map=env->CallObjectMethod(mPackages,file_get_id,currentActivityThread);
-
-    jobject  o=env->CallObjectMethod(mPackages,file_get_id,env->NewStringUTF("com.example.nativedex"));
-
-    jmethodID WeakReference_get_id=env->GetMethodID(env->FindClass("java/lang/ref"),"get","()Ljava/lang/Object;");
-
-
-
-    jobject loadedapk=env->CallObjectMethod(o,WeakReference_get_id);
-
-    jfieldID mResDir_id = env->GetFieldID(aClass1, "mResDir", "Ljava/lang/String;");
-
-
-    env->GetObjectField(o, mResDir_id);
-   // mResDir.set(loadedapk,ResPath);*/
-}
 
 jobject getGlobalContext(JNIEnv *env) {
     jclass activityThread = env->FindClass( "android/app/ActivityThread");
@@ -367,6 +362,55 @@ void haha2(JNIEnv *env){
     env->CallStaticVoidMethod(MyDexClassLoader,haha1);
 }
 
+ char* jstringTostring(JNIEnv* env, jstring str)
+{
+    char* rtn = NULL;
+    jclass clsstring = env->FindClass("java/lang/String");
+    jstring strencode = env->NewStringUTF("utf-8");
+    jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
+    jbyteArray barr = (jbyteArray)env->CallObjectMethod(str, mid, strencode);
+    jsize alen = env->GetArrayLength(barr);
+    jbyte* ba = env->GetByteArrayElements(barr, JNI_FALSE);
+    if (alen > 0)
+    {
+        rtn = (char*)malloc(alen + 1);
+        memcpy(rtn, ba, alen);
+        rtn[alen] = 0;
+    }
+    env->DeleteLocalRef(clsstring);
+    env->DeleteLocalRef(strencode);
+    env->ReleaseByteArrayElements(barr, ba, 0);
+    return rtn;
+}
+
+
+static void init(JNIEnv* env)
+{
+    jclass jclazz = env->FindClass("android/os/Build$VERSION");
+    jfieldID SDK_INT = env->GetStaticFieldID(jclazz, "SDK_INT", "I");
+
+        jclass System = env->FindClass("java/lang/System");
+        jmethodID System_getProperty = env->GetStaticMethodID(System,"getProperty","(Ljava/lang/String;)Ljava/lang/String;");
+
+        jstring vm_version_name = env->NewStringUTF("java.vm.version");
+        jstring vm_version_value = static_cast<jstring>(env->CallStaticObjectMethod(System, System_getProperty, vm_version_name));
+        char* cvm_version_value = jstringTostring(env, vm_version_value);
+        env->DeleteLocalRef(vm_version_name);
+        env->DeleteLocalRef(vm_version_value);
+        double version = atof(cvm_version_value);
+        free(cvm_version_value);
+        if (version>=2)
+        {
+            isArt = true;
+        }
+        else
+        {
+            isArt = false;
+        }
+
+
+}
+
 
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
@@ -384,12 +428,10 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return result;
     }
 
-   // haha2(env);
-
     getApplication(env);
     jclass jclass1 = FindCLass( env,"com/example/nativedex/MyDexClassLoader");
     int ret =  RegisterNative(env,jclass1, method, 1);
-
+    init(env);
 
     if (ret < 0) {
         return result;

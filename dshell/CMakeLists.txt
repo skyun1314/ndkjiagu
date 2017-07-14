@@ -10,15 +10,14 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-file(GLOB native_srcs "src/main/cpp/*.cpp")
 add_library( # Sets the name of the library.
-             zkjg-lib
+             dshell
 
              # Sets the library as a shared library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             ${native_srcs})
+             src/main/cpp/XJniDShell.cc )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -38,7 +37,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       zkjg-lib
+                       dshell
 
                        # Links the target library to the log library
                        # included in the NDK.
