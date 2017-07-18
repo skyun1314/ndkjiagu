@@ -85,9 +85,7 @@ void *GetFunAddr(char *methodName, char *sig) {
 
 }
 
-jint loadDavlikDex(JNIEnv *env, jbyteArray jbyteArray1){
-    jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
-    jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
+jint loadDavlikDex(JNIEnv *env, jbyte *jbyte1,jsize alen){
     open_dex_file = (OPEN_DEX_FILE) GetFunAddr("openDexFile", "([B)I");
     u1 *mybyte = (u1 *) jbyte1;
     ArrayObject *arrayObject = (ArrayObject *) malloc(sizeof(ArrayObject) + alen);
@@ -103,31 +101,14 @@ jint loadDavlikDex(JNIEnv *env, jbyteArray jbyteArray1){
     return jResult.i;
 }
 
- const void* OpenDexFileNativeCallbackImpl()
-{
-
-    int fd = open("/sdcard/classes.dex", O_RDONLY);
-    size_t fs = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
-
-    void *pMap = mmap(0, fs, PROT_READ, MAP_SHARED, fd, 0);
-
-    const void* cookie = DSMemDexArt21::LoadByte((const char*)pMap, fs);
-
-    //close(fd);
-
-    return cookie;
-}
-
-
-
 
 void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
-
+    jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
+    jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     if (isArt){
-        return (void *) OpenDexFileNativeCallbackImpl();
+        return (void *) DSMemDexArt21::LoadByte((const char *) jbyte1, alen);
     }else{
-       return (void *) loadDavlikDex(env, jbyteArray1);
+       return (void *) loadDavlikDex(env, jbyte1,alen);
     }
 
 }
@@ -413,6 +394,9 @@ static void init(JNIEnv* env)
 
 
 
+
+
+
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 
@@ -427,7 +411,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
         return result;
     }
-
     getApplication(env);
     jclass jclass1 = FindCLass( env,"com/example/nativedex/MyDexClassLoader");
     int ret =  RegisterNative(env,jclass1, method, 1);

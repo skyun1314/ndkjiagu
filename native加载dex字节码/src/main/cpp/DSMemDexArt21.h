@@ -9,9 +9,14 @@
 #include <jni.h>
 #include "DexFile.h"
 #include <stddef.h>
+#include <dlfcn.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "linker.h"
 class DSMemDexArt21 {
 public:
     static const void* LoadByte(const char* base, size_t size);
+
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H

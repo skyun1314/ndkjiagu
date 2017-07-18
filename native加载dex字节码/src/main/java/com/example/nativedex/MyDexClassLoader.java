@@ -15,11 +15,9 @@ import java.lang.reflect.Modifier;
 import java.util.Map;
 
 import dalvik.system.DexClassLoader;
-import dalvik.system.DexFile;
 
 import static com.example.nativedex.MyAppLication.getFromAssets;
 import static com.example.nativedex.MyAppLication.getFromRaw;
-import static com.example.nativedex.MyAppLication.invokeDeclaredStaticMethod;
 
 /**
  * Created by zk on 2017/6/29.
@@ -41,6 +39,8 @@ public class MyDexClassLoader extends DexClassLoader {
         mCookie = loadDex(dexBytes);
         mContext = context;
         mContext1 = context;
+
+
     }
 
     public static void enumMethod(String className) {
@@ -135,8 +135,10 @@ public class MyDexClassLoader extends DexClassLoader {
                     // 1. 获取DexFile类类型
                     Class clsDexFile = Class.forName("dalvik.system.DexFile");
                     // 2. 获取defineClass方法
-                    Method method_defineClass = clsDexFile.getDeclaredMethod("defineClassNative", String.class, ClassLoader.class, int.class
-                    );
+
+                    enumMethod("dalvik.system.DexFile");
+
+                    Method method_defineClass = clsDexFile.getDeclaredMethod("defineClassNative", String.class, ClassLoader.class, long.class );
                     method_defineClass.setAccessible(true);
                     // 3. 调用defineClass方法,加载类
                     clazz = (Class) method_defineClass.invoke(null, className, mClassLoader, mCookie);
@@ -176,7 +178,7 @@ public class MyDexClassLoader extends DexClassLoader {
         return null;
     }
 
-    public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context) {
+   public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context) {
         try {
             Class<?> aClass = Class.forName("android.app.ActivityThread");
             Class<?> aClass1 = Class.forName("android.app.LoadedApk");
@@ -228,7 +230,7 @@ public class MyDexClassLoader extends DexClassLoader {
                     Class clzDexFile = Class.forName("dalvik.system.DexFile");
                     Field field_mcookie = clzDexFile.getDeclaredField("mCookie");
                     field_mcookie.setAccessible(true);
-                    field_mcookie.set(dexFile, mCookie);
+                  //  field_mcookie.set(dexFile, mCookie);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -264,55 +266,5 @@ public class MyDexClassLoader extends DexClassLoader {
 
         return mResources;
     }
-
-
-    private String[] getClassNameList(int cookie) {
-        return (String[]) invokeDeclaredStaticMethod(DexFile.class.getName(),
-                "getClassNameList", new Class[]{int.class},
-                new Object[]{cookie});
-    }
-
-    private Class defineClass(String name, ClassLoader loader, int cookie) {
-        Log.i(TAG, "define class:" + name);
-        return (Class) invokeDeclaredStaticMethod(DexFile.class.getName(),
-                "defineClassNative", new Class[]{String.class, ClassLoader.class,
-                        int.class}, new Object[]{name, loader, cookie});
-    }
-
-    @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-        Log.d(TAG, "findClass-" + name);
-        Class<?> cls = null;
-        String as[] = getClassNameList(mCookie);
-        for (int z = 0; z < as.length; z++) {
-            Log.i(TAG, "classname:" + as[z]);
-            if (as[z].equals(name)) {
-                cls = defineClass(as[z].replace('.', '/'),
-                        mContext.getClassLoader(), mCookie);
-            } else {
-                //加载其他类
-                defineClass(as[z].replace('.', '/'), mContext.getClassLoader(),
-                        mCookie);
-            }
-        }
-
-        if (null == cls) {
-            cls = super.findClass(name);
-        }
-
-        return cls;
-    }
-
-    @Override
-    protected Class<?> loadClass(String className, boolean resolve)
-            throws ClassNotFoundException {
-        Log.d(TAG, "loadClass-" + className + " resolve " + resolve);
-        Class<?> clazz = super.loadClass(className, resolve);
-        if (null == clazz) {
-            Log.e(TAG, "loadClass fail,maybe get a null-point exception.");
-        }
-        return clazz;
-    }
-
 
 }

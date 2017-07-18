@@ -96,7 +96,7 @@ public class MyAppLication extends Application {
 
         // String path = FileUtil.copyDex("classes.dex", this);
 
-        myDexClassLoader = new MyDexClassLoader(
+    /*    myDexClassLoader = new MyDexClassLoader(
                 this,
                 dexByte,
                 dexPath,// getPackageResourcePath(),
@@ -104,13 +104,14 @@ public class MyAppLication extends Application {
                 null,
                 getClassLoader()
         );
-        myDexClassLoader.replaceClassLoader(myDexClassLoader, this);
-
+        myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*/
+        DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
         getOldAppCation();
 
     }

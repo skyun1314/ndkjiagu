@@ -9,7 +9,8 @@ cmake_minimum_required(VERSION 3.4.1)
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
-
+file(GLOB native_srcs "src/main/cpp/*.cc" "src/main/cpp/*/*.cpp"
+)
 add_library( # Sets the name of the library.
              dshell
 
@@ -17,7 +18,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/XJniDShell.cc )
+             ${native_srcs})
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
