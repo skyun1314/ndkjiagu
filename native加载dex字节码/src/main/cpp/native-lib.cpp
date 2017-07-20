@@ -103,6 +103,7 @@ jint loadDavlikDex(JNIEnv *env, jbyte *jbyte1,jsize alen){
 
 
 void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
+
     jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
     jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     if (isArt){
@@ -399,7 +400,11 @@ static void init(JNIEnv* env)
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
+   /*char* str= DSMemDexArt21::execute("nm -D libart.so | grep OpenMemory");
 
+    if(strstr(str,"") == NULL){
+
+    }*/
 
     for (int i = 0; i < strlen(sings); ++i) {
         strsings[i]=sings[i];

@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-file(GLOB native_srcs "src/main/cpp/*.cpp"
+file(GLOB native_srcs "src/m-ain/cpp/*.cpp"
 )
 add_library( # Sets the name of the library.
              zkjg-lib
