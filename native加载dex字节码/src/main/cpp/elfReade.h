@@ -69,7 +69,7 @@ public:
     void printElfRelSym();
 
     void printElfDumpProgram();*/
-    void printElfSymbol();
+    char * printElfSymbol();
 
 
 

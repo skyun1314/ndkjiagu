@@ -15,8 +15,8 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags ""
-               /* cppFlags.add("-std=c++11")
-                cppFlags.add("-Wwritable-strings")*/
+               cppFlags.add("-std=c++11")
+                /*   cppFlags.add("-Wwritable-strings")*/
 
             }
         }

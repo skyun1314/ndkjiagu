@@ -48,7 +48,7 @@ unsigned int ElfReade::getFileSize() const
 }
 
 
-void ElfReade::printElfSymbol()
+char * ElfReade::printElfSymbol()
 {
 
     //段表的总个数
@@ -197,7 +197,7 @@ void ElfReade::printElfSymbol()
                 if(strstr(strtab_addr + sym_addr[j].st_name, "_ZN3art7DexFile10OpenMemoryEPKhjRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6M") != NULL){
                     printf1("---------%s-------","haha");
                     printf1(" %s",strtab_addr + sym_addr[j].st_name);
-
+                    return strtab_addr + sym_addr[j].st_name;
                 }
 
 

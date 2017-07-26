@@ -15,11 +15,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "linker.h"
-class DSMemDexArt21 {
+class DSMemDexArt {
 public:
     static const void* LoadByte(const char* base, size_t size);
     static int sdkVersion();
     static char * execute(char*str);
 };
 
+class HH{
+public:
+    void haha(int a);
+    void aa();
+};
 #endif //TESTSHELL_DSMEMDEXART21_H

@@ -3,7 +3,7 @@
 #include <dlfcn.h>
 #include "Common.h"
 #include "Object.h"
-#include "DSMemDexArt21.h"
+#include "DSMemDexArt.h"
 # include <stdlib.h>
 #include <android/log.h>
 #include <sys/types.h>
@@ -17,6 +17,11 @@ OPEN_DEX_FILE open_dex_file = NULL;
 bool isArt;
 using namespace std;
 char *strsings= (char *) malloc(962);
+
+
+
+
+
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,"wodelog", __VA_ARGS__)
 #define  be_attached_check()\
 {\
@@ -107,7 +112,18 @@ void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
     jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
     jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     if (isArt){
-        return (void *) DSMemDexArt21::LoadByte((const char *) jbyte1, alen);
+
+
+
+
+
+
+      return (void *) DSMemDexArt::LoadByte((const char *) jbyte1, alen);
+
+
+
+
+       // return (void *)
     }else{
        return (void *) loadDavlikDex(env, jbyte1,alen);
     }
@@ -400,7 +416,7 @@ static void init(JNIEnv* env)
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
-   /*char* str= DSMemDexArt21::execute("nm -D libart.so | grep OpenMemory");
+   /*char* str= DSMemDexArt::execute("nm -D libart.so | grep OpenMemory");
 
     if(strstr(str,"") == NULL){
 

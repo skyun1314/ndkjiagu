@@ -230,7 +230,7 @@ public class MyDexClassLoader extends DexClassLoader {
                     Class clzDexFile = Class.forName("dalvik.system.DexFile");
                     Field field_mcookie = clzDexFile.getDeclaredField("mCookie");
                     field_mcookie.setAccessible(true);
-                  //  field_mcookie.set(dexFile, mCookie);
+                    field_mcookie.set(dexFile, mCookie);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
