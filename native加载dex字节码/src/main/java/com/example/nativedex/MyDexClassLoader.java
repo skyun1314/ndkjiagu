@@ -36,6 +36,9 @@ public class MyDexClassLoader extends DexClassLoader {
     public MyDexClassLoader(Context context, byte[] dexBytes, String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
         super(dexPath, optimizedDirectory, librarySearchPath, parent);
         mClassLoader = parent;
+        int length = dexBytes.length;
+
+
         mCookie = loadDex(dexBytes);
         mContext = context;
         mContext1 = context;

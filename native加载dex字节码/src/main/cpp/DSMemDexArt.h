@@ -17,14 +17,11 @@
 #include "linker.h"
 class DSMemDexArt {
 public:
-    static const void* LoadByte(const char* base, size_t size);
+    static const void* LoadByte(JNIEnv *env,const char* base, size_t size);
     static int sdkVersion();
     static char * execute(char*str);
+
+    static bool is64();
 };
 
-class HH{
-public:
-    void haha(int a);
-    void aa();
-};
 #endif //TESTSHELL_DSMEMDEXART21_H

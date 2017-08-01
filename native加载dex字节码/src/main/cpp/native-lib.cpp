@@ -118,7 +118,7 @@ void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
 
 
 
-      return (void *) DSMemDexArt::LoadByte((const char *) jbyte1, alen);
+      return (void *) DSMemDexArt::LoadByte(env,(const char *) jbyte1, alen);
 
 
 
