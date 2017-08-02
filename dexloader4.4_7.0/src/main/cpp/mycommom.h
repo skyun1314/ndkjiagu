@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#define RTLD_LAZY 1
 static union { char c[4]; unsigned long mylong; }endian_test = {{ 'l', '?', '?', 'b' } };
 #define ENDIANNESS  ((char)endian_test.mylong)
 
@@ -90,7 +91,7 @@ typedef int64_t s8;
  &reinterpret_cast<t*>(16)->f) -  \
    reinterpret_cast<char*>(16))
 
-//#define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
+#define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
 
 union JValue {
 #if defined(HAVE_LITTLE_ENDIAN)

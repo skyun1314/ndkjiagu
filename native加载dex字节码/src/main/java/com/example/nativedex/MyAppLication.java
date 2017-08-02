@@ -6,6 +6,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,6 +30,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import dalvik.system.PathClassLoader;
+
 
 /**
  * Created by zk on 2017/6/30.
@@ -105,14 +112,25 @@ public class MyAppLication extends Application {
                 getClassLoader()
         );
         myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*/
-        DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
+       // DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
+MyDexClassLoader.replaceClassLoader(null,this,dexByte);
+
+
+      /*  try {
+            Object newDexElements = DexUtils.getDexElements(DexUtils.getPathList(getClassLoader()));
+            Object pathList = DexUtils.getPathList(getPathClassLoader());
+            DexUtils.setField(pathList, pathList.getClass(), "dexElements", newDexElements);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        getOldAppCation();
+     //   getOldAppCation();
 
     }
 
@@ -446,7 +464,113 @@ public class MyAppLication extends Application {
 
 
 
+    public static class DexUtils {
+
+        public static void injectDexAtFirst(Context context,String dexPath, String defaultDexOptPath,byte[] dexBytes) {
+            try {
+                MyDexClassLoader dexClassLoader = new MyDexClassLoader(context,dexBytes,dexPath,defaultDexOptPath, dexPath, getPathClassLoader());
+                dexClassLoader.replaceClassLoader(dexClassLoader, context);
+                //Object baseDexElements = getDexElements(getPathList(getPathClassLoader()));
+                Object newDexElements = getDexElements(getPathList(dexClassLoader));
+                //  Object allDexElements = combineArray(newDexElements, newDexElements);
+                Object pathList = getPathList(getPathClassLoader());
+                setField(pathList, pathList.getClass(), "dexElements", newDexElements);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public static PathClassLoader getPathClassLoader() {
+            PathClassLoader pathClassLoader = (PathClassLoader) DexUtils.class.getClassLoader();
+            return pathClassLoader;
+        }
+
+        public static Object getDexElements(Object paramObject)
+                throws IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+            return getField(paramObject, paramObject.getClass(), "dexElements");
+        }
+
+        public static Object getPathList(Object baseDexClassLoader)
+                throws IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
+            return getField(baseDexClassLoader, Class.forName("dalvik.system.BaseDexClassLoader"), "pathList");
+        }
+
+        public static Object combineArray(Object firstArray, Object secondArray) {
+            Class<?> localClass = firstArray.getClass().getComponentType();
+            int firstArrayLength = Array.getLength(firstArray);
+            int allLength = firstArrayLength + Array.getLength(secondArray);
+            Object result = Array.newInstance(localClass, allLength);
+            for (int k = 0; k < allLength; ++k) {
+                if (k < firstArrayLength) {
+                    Array.set(result, k, Array.get(firstArray, k));
+                } else {
+                    Array.set(result, k, Array.get(secondArray, k - firstArrayLength));
+                }
+            }
+            return result;
+        }
+
+        public static Object getField(Object obj, Class<?> cl, String field)
+                throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+            Field localField = cl.getDeclaredField(field);
+            localField.setAccessible(true);
+            return localField.get(obj);
+        }
+
+        public static void setField(Object obj, Class<?> cl, String field, Object value)
+                throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+            Field localField = cl.getDeclaredField(field);
+            localField.setAccessible(true);
+            localField.set(obj, value);
+        }
+
+    }
 
 
+    public static class FileUtil {
+
+        public static String copyDex(String dexName, Context context){
+            AssetManager assetManager=context.getAssets();
+            try {
+                InputStream open = assetManager.open(dexName);
+                String outputPath=context.getFilesDir()+ File.separator+dexName;
+                FileOutputStream fileOutputStream=new FileOutputStream(outputPath);
+
+                byte b[]=new byte[1024];
+                int len=0;
+                while ((len=open.read(b))!=-1){
+                    fileOutputStream.write(b,0,len);
+                }
+
+                fileOutputStream.close();
+
+                return outputPath;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+
+        public static byte[] copyDexToByte(String dexName, Context context){
+            AssetManager assetManager=context.getAssets();
+            try {
+                InputStream open = assetManager.open(dexName);
+                ByteArrayOutputStream fileOutputStream=new ByteArrayOutputStream();
+
+                byte b[]=new byte[1024];
+                int len=0;
+                while ((len=open.read(b))!=-1){
+                    fileOutputStream.write(b,0,len);
+                }
+                return fileOutputStream.toByteArray();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+    }
 
 }

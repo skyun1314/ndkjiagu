@@ -21,7 +21,7 @@ using namespace std;
 
 
 //Elf 头文件长度
-#define ELF_LENHT 		sizeof(Elf32_Ehdr)
+//#define ELF_LENHT 		sizeof(Elf32_Ehdr)
 
 
 
@@ -42,8 +42,10 @@ public:
 
 private:
 
-    Elf32_Ehdr	elf_header;
-    Elf32_Shdr 		*elf_section;
+    Elf32_Ehdr	elf_header_32;
+    Elf32_Shdr 		*elf_section_32;
+    Elf64_Ehdr	elf_header_64;
+    Elf64_Shdr 		*elf_section_64;
 
     char *start;
     int fd;     //打开文件描述符

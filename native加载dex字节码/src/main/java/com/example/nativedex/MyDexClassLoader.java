@@ -31,14 +31,11 @@ public class MyDexClassLoader extends DexClassLoader {
     static Context mContext1;
     private String TAG = "wodelog";
 
-    public native int loadDex(byte[] bytes);
+    public static native int loadDex(byte[] bytes);
 
     public MyDexClassLoader(Context context, byte[] dexBytes, String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
         super(dexPath, optimizedDirectory, librarySearchPath, parent);
         mClassLoader = parent;
-        int length = dexBytes.length;
-
-
         mCookie = loadDex(dexBytes);
         mContext = context;
         mContext1 = context;
@@ -155,31 +152,74 @@ public class MyDexClassLoader extends DexClassLoader {
         return clazz;
     }
 
-    public ClassLoader replaceClassLoader(ClassLoader dexClassLoader, Context context) {
+    public static void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context,byte[] dexBytes) {
         try {
+            int i1 = loadDex(dexBytes);
+
 
             Class<?> aClass = Class.forName("android.app.ActivityThread");
-
+            Class<?> aClass1 = Class.forName("android.app.LoadedApk");
+            String ResPath = context.getFilesDir() + File.separator + "res.zip";
 
             Object currentActivityThread = aClass.getMethod("currentActivityThread").invoke(new Object[]{});
             Field mPackages = aClass.getDeclaredField("mPackages");
             mPackages.setAccessible(true);
             Map map = (Map) mPackages.get(currentActivityThread);
             WeakReference o = (WeakReference) map.get(context.getPackageName());
-            Class<?> aClass1 = Class.forName("android.app.LoadedApk");
+            Object loadedapk = o.get();
             Field mClassLoader = aClass1.getDeclaredField("mClassLoader");
             mClassLoader.setAccessible(true);
 
 
-            mClassLoader.set(o.get(), dexClassLoader);
-            return dexClassLoader;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Field mResDir = aClass1.getDeclaredField("mResDir");
+            Field mResources = aClass1.getDeclaredField("mResources");
+            mResDir.setAccessible(true);
+            mResources.setAccessible(true);
+            String mResDir_str = (String) mResDir.get(loadedapk);
+            Resources mResources_str = (Resources) mResources.get(loadedapk);
+
+
+            mResDir.set(loadedapk, ResPath);
+            mResources.set(loadedapk, loadResources(ResPath, context));
+
+            Object classLoader = mClassLoader.get(loadedapk);
+            Class clzBaseDexClassLoader = Class.forName("dalvik.system.BaseDexClassLoader");
+            Class clzDexPathList = Class.forName("dalvik.system.DexPathList");
+            Field field_pathList = clzBaseDexClassLoader.getDeclaredField("pathList");
+            field_pathList.setAccessible(true);
+            Object dexPathList = field_pathList.get(classLoader);
+            Field field_dexElements = clzDexPathList.getDeclaredField("dexElements");
+            field_dexElements.setAccessible(true);
+            Class clzElement = Class.forName("dalvik.system.DexPathList$Element");
+            Object dexElemennts = field_dexElements.get(dexPathList);
+
+            //int cookie=MmClassLoader.getcookie();
+            int length = Array.getLength(dexElemennts);
+
+            for (int i = 0; i < length; i++) {
+                Object ele = Array.get(dexElemennts, i);
+
+                try {
+                    Field field_dexFile = clzElement.getDeclaredField("dexFile");
+                    field_dexFile.setAccessible(true);
+                    Object dexFile = field_dexFile.get(ele);
+
+                    Class clzDexFile = Class.forName("dalvik.system.DexFile");
+                    Field field_mcookie = clzDexFile.getDeclaredField("mCookie");
+                    field_mcookie.setAccessible(true);
+                    field_mcookie.set(dexFile, i1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
+
 
    public void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context) {
         try {
@@ -247,7 +287,7 @@ public class MyDexClassLoader extends DexClassLoader {
     }
 
 
-    public Resources loadResources(String resPath, Context context) {
+    public static Resources loadResources(String resPath, Context context) {
         AssetManager assetManager = null;
         try {
             assetManager = AssetManager.class.newInstance();

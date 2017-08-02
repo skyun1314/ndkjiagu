@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-const void *
-(*org_artDexFileOpenMemory)(const uint8_t *base, size_t size, const std::string &location,
+const long(*org_artDexFileOpenMemory)(const uint8_t *base, size_t size, const std::string &location,
                             uint32_t location_checksum, void */* MemMap* */ mem_map,
                             std::string *error_msg) = NULL;
 
@@ -73,7 +72,7 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, size_t size) {
     std::string location = "";
     std::string err_msg;
     char *OpenMemoryname;
-    void * handle1 = dlopen("libart.so", RTLD_LAZY);
+    void * handle1 = dlopen("libart.so", RTLD_NOW);
 
     /*  jclass DexFile_class = env->FindClass("dalvik/system/DexFile");
       jmethodID loadDex_id = env->GetStaticMethodID(DexFile_class, "loadDex",
@@ -88,10 +87,15 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, size_t size) {
 
                  void *pMap = mmap(0, fs, PROT_READ, MAP_SHARED, fd, 0);
   */
+    ElfReade *read;
+    if (is64()) {
+       read = new ElfReade("/system/lib64/libart.so");
+    }else{
+        read = new ElfReade("/system/lib/libart.so");
+    }
 
-    ElfReade *read = new ElfReade("/system/lib/libart.so");
     OpenMemoryname = read->printElfSymbol();
-    OpenMemoryname="_ZN3art7DexFile10OpenMemoryEPKhmRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_";
+    //OpenMemoryname="_ZN3art7DexFile10OpenMemoryEPKhmRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_";
     //32位程序  _ZN3art7DexFile10OpenMemoryEPKhjRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_
     //64位程序   _ZN3art7DexFile10OpenMemoryEPKhmRKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_
     int sdkVer = DSMemDexArt::sdkVersion();
@@ -126,10 +130,10 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, size_t size) {
         printf("%s", "hani");
 
     } else {
-        org_artDexFileOpenMemory = (const void *(*)(const uint8_t *, size_t, const string &,
-                                                    uint32_t, void *, string *)) OpenMemoryname_sys;
+        org_artDexFileOpenMemory = (const long (*)(const uint8_t *, size_t, const string &, uint32_t,
+                                                   void *, string *)) OpenMemoryname_sys;
 
-        p = org_artDexFileOpenMemory((const uint8_t *) base, size, location,
+        art_Cookie = org_artDexFileOpenMemory((const uint8_t *) base, size, location,
                                      dex_header->checksum, NULL, &err_msg);
     }
 

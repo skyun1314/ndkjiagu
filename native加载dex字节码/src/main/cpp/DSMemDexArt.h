@@ -22,6 +22,11 @@ public:
     static char * execute(char*str);
 
     static bool is64();
+
+
+
+    static jlong art_Cookie=0;//5.0-5.1
+    static jobject art_MarCookie=0;//6.0
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H
