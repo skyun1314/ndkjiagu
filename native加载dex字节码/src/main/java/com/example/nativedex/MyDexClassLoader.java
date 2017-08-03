@@ -31,13 +31,13 @@ public class MyDexClassLoader extends DexClassLoader {
     static Context mContext1;
     private String TAG = "wodelog";
 
-    public static native int loadDex(byte[] bytes);
+    public static native int loadDex(byte[] bytes,Context context);
     public static native int loadDex1(byte[] bytes,Context context);
 
     public MyDexClassLoader(Context context, byte[] dexBytes, String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
         super(dexPath, optimizedDirectory, librarySearchPath, parent);
         mClassLoader = parent;
-        mCookie = loadDex(dexBytes);
+        mCookie = loadDex(dexBytes,context);
         mContext = context;
         mContext1 = context;
 
@@ -155,7 +155,7 @@ public class MyDexClassLoader extends DexClassLoader {
 
     public static void replaceClassLoader(Context context,byte[] dexBytes) {
         try {
-            int i1 = loadDex(dexBytes);
+            int i1 = loadDex(dexBytes,context);
 
             Class<?> aClass = Class.forName("android.app.ActivityThread");
             Class<?> aClass1 = Class.forName("android.app.LoadedApk");

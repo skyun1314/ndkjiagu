@@ -28,6 +28,7 @@ public:
 
     static int sdk_int;//6.0
 
+    static void replace_classloader_cookie(JNIEnv *pEnv, jlong cookie, jobject pJobject);
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H

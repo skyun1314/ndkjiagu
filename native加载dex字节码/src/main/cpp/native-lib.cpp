@@ -63,12 +63,12 @@ extern "C" {
 
 
 jbyte * GetbyteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCopy){
-    be_attached_check();
+    //be_attached_check();
     return env->GetByteArrayElements(array, NULL);
 }
 
 int strCmp(const char *str1, const char *str2){
-    be_attached_check();
+    //be_attached_check();
     return strcmp(str1,str2);
 }
 
@@ -77,7 +77,7 @@ void *GetFunAddr(char *methodName, char *sig) {
     JNINativeMethod *jniNativeMethod = (JNINativeMethod *) dlsym(handle,
                                                                  "dvm_dalvik_system_DexFile");
 
-    be_attached_check();
+    //be_attached_check();
     while (jniNativeMethod++) {
         if (strCmp(jniNativeMethod->name, methodName) == 0
             && strCmp(jniNativeMethod->signature, sig) == 0
@@ -107,16 +107,14 @@ jint loadDavlikDex(JNIEnv *env, jbyte *jbyte1,jsize alen){
 }
 
 
-void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
+void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1, jobject obj) {
 
     jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
     jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     if (isArt){
 
-      return (void *) DSMemDexArt::LoadByte(env, (const char *) jbyte1, alen, nullptr);
+      return (void *) DSMemDexArt::LoadByte(env, (const char *) jbyte1, alen, obj);
 
-
-       // return (void *)
     }else{
        return (void *) loadDavlikDex(env, jbyte1,alen);
     }
@@ -142,7 +140,7 @@ void* loadDex1(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1, jobject ob
 static JNINativeMethod method[] = {
 
         {"loadDex",
-                "([B)I",
+                "([BLandroid/content/Context;)I",
                 (void *) loadDex
         },
         {"loadDex1",
@@ -174,7 +172,7 @@ jobject getApplication(JNIEnv *env) {
 }
 
 jmethodID GetMethodId(JNIEnv*env,jclass jclass1,char* jstring1,char* jstring2){
-    be_attached_check();
+    //be_attached_check();
     return env->GetMethodID(jclass1, jstring1,  jstring2);
 }
 
@@ -183,7 +181,7 @@ jmethodID GetMethodId(JNIEnv*env,jclass jclass1,char* jstring1,char* jstring2){
 void callStaticVoidMethodd(JNIEnv *env, const char *str, jlong jlong1){
     jclass systemZ=env->FindClass("java/lang/System");
     jmethodID systemM=env->GetStaticMethodID(systemZ,"exit","(I)V");
-    be_attached_check();
+    //be_attached_check();
     if (jlong1!=NULL){
         if (jlong1!=678830132){
             //env->CallStaticVoidMethod(systemZ,systemM,0);
@@ -194,16 +192,16 @@ void callStaticVoidMethodd(JNIEnv *env, const char *str, jlong jlong1){
         else{
             //env->CallStaticVoidMethod(systemZ,systemM,0);
         }
-        be_attached_check();
+        //be_attached_check();
     }
 }
 
 jint RegisterNative(JNIEnv *env,jclass jclass1,JNINativeMethod method1[],int Nnum) {
-    be_attached_check();
+    //be_attached_check();
     // Application object
     jobject application = getApplication(env);
     if (application != NULL) {
-        be_attached_check();
+       // be_attached_check();
 // Context(ContextWrapper) class
         jclass context_clz = env->GetObjectClass(application);
 // getPackageManager()方法
@@ -222,7 +220,7 @@ jint RegisterNative(JNIEnv *env,jclass jclass1,JNINativeMethod method1[],int Nnu
                                                "()Ljava/lang/String;");
 // 调用getPackageName()
         jstring package_name = (jstring) (env->CallObjectMethod(application, getPackageName));
-        be_attached_check();
+       // be_attached_check();
 // PackageInfo实例
         jobject package_info = env->CallObjectMethod(package_manager, getPackageInfo, package_name,
                                                      64);
@@ -231,7 +229,7 @@ jint RegisterNative(JNIEnv *env,jclass jclass1,JNINativeMethod method1[],int Nnu
 // signatures字段
         jfieldID signatures_field = env->GetFieldID(package_info_clz, "signatures",
                                                     "[Landroid/content/pm/Signature;");
-        be_attached_check();
+      //  be_attached_check();
         jobject signatures = env->GetObjectField(package_info, signatures_field);
         jobjectArray signatures_array = (jobjectArray) signatures;
         jobject signature0 = env->GetObjectArrayElement(signatures_array, 0);
@@ -245,16 +243,16 @@ jint RegisterNative(JNIEnv *env,jclass jclass1,JNINativeMethod method1[],int Nnu
 // 最终的签名串
         const char *sign = env->GetStringUTFChars(signature_str, NULL);
         callStaticVoidMethodd(env, sign, NULL);
-        be_attached_check();
+        ///be_attached_check();
     }
-    be_attached_check();
+    //be_attached_check();
     return env->RegisterNatives(jclass1, method, 2);
 }
 
 
 //检查dex合法性
 jclass FindCLass(JNIEnv *env, char *str) {
-    be_attached_check();
+   // be_attached_check();
     // Application object
     jobject application = getApplication(env);
     if (application != NULL) {
@@ -266,24 +264,24 @@ jclass FindCLass(JNIEnv *env, char *str) {
 // 获取getPackageCodePath实例
         jobject getPackage_CodePath =  env->CallObjectMethod(application, getPackageCodePath);
 
-        be_attached_check();
+      //  be_attached_check();
         const char *CodePath = env->GetStringUTFChars((jstring)getPackage_CodePath, NULL);
 
         jclass ZipFile = env->FindClass("java/util/zip/ZipFile");
         jmethodID id_ZipFile = GetMethodId(env,ZipFile, "<init>", "(Ljava/lang/String;)V");
         jobject Zip_File = env->NewObject(ZipFile, id_ZipFile, env->NewStringUTF(CodePath));
-        be_attached_check();
+      //  be_attached_check();
         jclass getEntry = env->GetObjectClass(Zip_File);
-        be_attached_check();
+      //  be_attached_check();
         jmethodID ZipEntry = GetMethodId(env,getEntry, "getEntry",
                                          "(Ljava/lang/String;)Ljava/util/zip/ZipEntry;");
         jobject Zip_Entry = env->CallObjectMethod(Zip_File, ZipEntry, env->NewStringUTF("classes.dex"));
-        be_attached_check();
+       // be_attached_check();
         jclass Zip_Entry_class = env->GetObjectClass(Zip_Entry);
         jmethodID getCrc = GetMethodId(env,Zip_Entry_class, "getCrc", "()J");
         jlong get_Crc = (jlong) env->CallLongMethod(Zip_Entry,getCrc);
         callStaticVoidMethodd(env, NULL, get_Crc);
-        be_attached_check();
+        //be_attached_check();
 
         printf("%s", "haha");
     }

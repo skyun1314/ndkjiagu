@@ -31,13 +31,14 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import dalvik.system.DexFile;
+
 
 /**
  * Created by zk on 2017/6/30.
  */
 
 public class MyAppLication extends Application {
-    public static MyDexClassLoader myDexClassLoader;
 
     static {
         System.loadLibrary("zkjg-lib");
@@ -93,9 +94,8 @@ public class MyAppLication extends Application {
             }
         }
 
-
-
-
+        Context applicationContext = this;
+        MyDexClassLoader.loadDex(dexByte,applicationContext);
             //Log.e("wodelog","\ndex:"+bytesToHexString(sizeByoff));
 
 
@@ -112,12 +112,12 @@ public class MyAppLication extends Application {
         myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*/
 
 
-        DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
+      //  DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
 
 
+     // replacecookie(dexPath,dexByte);
 
 
-        Context applicationContext = this;
       // MyDexClassLoader.replaceClassLoader(applicationContext,dexByte);
 
 
@@ -130,6 +130,32 @@ public class MyAppLication extends Application {
         }*/
 
 
+    }
+
+    private void replacecookie(String dexPath,byte[]dexByte) {
+        try {
+            DexFile dexFile=DexFile.loadDex(dexPath,null,0);
+            Field mCookie = dexFile.getClass().getDeclaredField("mCookie");
+            mCookie.setAccessible(true);
+           // int i1 = MyDexClassLoader.loadDex(dexByte);
+            //mCookie.set(dexFile,i1);
+
+
+            Object pathList = DexUtils.getPathList(this.getClassLoader());
+
+            Object base_ClassLoader_dexElements = DexUtils.getDexElements(pathList);
+
+
+            int length = Array.getLength(base_ClassLoader_dexElements);
+
+            for (int i = 0; i < length; i++) {
+                Object ele = Array.get(base_ClassLoader_dexElements, i);
+                Object base_ClassLoader_dexFile=   DexUtils.getField(ele, ele.getClass(), "dexFile");
+                DexUtils.setField(ele, ele.getClass(), "dexFile",dexFile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -316,7 +342,6 @@ public class MyAppLication extends Application {
         }
 
         Log.i("wodelog", "app:" + app);
-
         app.onCreate();
     }
 
@@ -395,36 +420,6 @@ public class MyAppLication extends Application {
         }
     }
 
-    /*    */
-
-/*    public static Object getStaticFieldOjbect(String class_name, String filedName) {
-
-        try {
-            Class obj_class = Class.forName(class_name);
-            Field field = obj_class.getDeclaredField(filedName);
-            field.setAccessible(true);
-            return field.get(null);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-
-    }*/
-
-
-
-/*    public static void setStaticOjbect(String class_name, String filedName, Object filedVaule) {
-        try {
-            Class obj_class = Class.forName(class_name);
-            Field field = obj_class.getDeclaredField(filedName);
-            field.setAccessible(true);
-            field.set(null, filedVaule);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }*/
 
 
     public static String getFromAssets(String fileName, Context context, Resources resources){
@@ -473,13 +468,35 @@ public class MyAppLication extends Application {
 
         public static void injectDexAtFirst(Context context,String dexPath, String defaultDexOptPath,byte[] dexBytes) {
             try {
-                MyDexClassLoader dexClassLoader = new MyDexClassLoader(context,dexBytes,dexPath,defaultDexOptPath, dexPath, context.getClassLoader());
-               dexClassLoader.replaceClassLoader(dexClassLoader, context);
+                //MyDexClassLoader dexClassLoader = new MyDexClassLoader(context,dexBytes,dexPath,defaultDexOptPath, dexPath, context.getClassLoader());
+               //dexClassLoader.replaceClassLoader(dexClassLoader, context);
 
 
-                Object newDexElements = getDexElements(getPathList(dexClassLoader));
+                DexFile dexFile=DexFile.loadDex(dexPath,null,0);
+                Field mCookie = dexFile.getClass().getDeclaredField("mCookie");
+                mCookie.setAccessible(true);
+                int i1 = MyDexClassLoader.loadDex(dexBytes,context);
+                mCookie.set(dexFile,i1);
+
+
                 Object pathList = getPathList(context.getClassLoader());
-                setField(pathList, pathList.getClass(), "dexElements", newDexElements);
+
+                Object base_ClassLoader_dexElements = getDexElements(pathList);
+
+
+
+                int length = Array.getLength(base_ClassLoader_dexElements);
+
+                for (int i = 0; i < length; i++) {
+                    Object ele = Array.get(base_ClassLoader_dexElements, i);
+                    Object base_ClassLoader_dexFile=   getField(ele, ele.getClass(), "dexFile");
+                    setField(ele, ele.getClass(), "dexFile",dexFile);
+                }
+
+
+
+
+             //   setField(pathList, pathList.getClass(), "dexElements", newDexElements);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -493,7 +510,13 @@ public class MyAppLication extends Application {
         }
 
         public static Object getPathList(Object baseDexClassLoader)
+
+
+
                 throws IllegalArgumentException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
+
+
+
             return getField(baseDexClassLoader, Class.forName("dalvik.system.BaseDexClassLoader"), "pathList");
         }
 

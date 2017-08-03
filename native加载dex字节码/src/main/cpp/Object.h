@@ -39,6 +39,8 @@ struct Field;
 struct RegisterMap;
 
 #include "DexProto.h"
+#include "Common.h"
+
 #define CLASS_FIELD_SLOTS   4
 typedef uint8_t             u1;
 typedef uint16_t            u2;
