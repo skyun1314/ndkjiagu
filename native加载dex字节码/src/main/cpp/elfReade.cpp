@@ -122,10 +122,8 @@ char *ElfReade::printElfSymbol() {
                 }else{
                     xx00=strtab_addr + sym_addr_32[j].st_name;
                 }
-
-
-                if (strstr(xx00, "RKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEPKNS_10OatDexFileEPS9_") !=
-                    NULL&&(strstr(xx00,"OpenMemory")!=NULL)) {
+                if (strstr(xx00, "RKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEjPNS_6MemMapEP") !=
+                    NULL&&(strstr(xx00,"OpenMemory")!=NULL)&&(strstr(xx00,"_ZN3art7Dex")!=NULL)) {
                     printf1(" %s", xx00);
                     return xx00;
                 }
@@ -135,5 +133,6 @@ char *ElfReade::printElfSymbol() {
         }
 
     }
+    return "";
 }
 

@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import dalvik.system.PathClassLoader;
-
 
 /**
  * Created by zk on 2017/6/30.
@@ -112,8 +110,15 @@ public class MyAppLication extends Application {
                 getClassLoader()
         );
         myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*/
-       // DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
-MyDexClassLoader.replaceClassLoader(null,this,dexByte);
+
+
+        DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
+
+
+
+
+        Context applicationContext = this;
+      // MyDexClassLoader.replaceClassLoader(applicationContext,dexByte);
 
 
       /*  try {
@@ -130,7 +135,7 @@ MyDexClassLoader.replaceClassLoader(null,this,dexByte);
     @Override
     public void onCreate() {
         super.onCreate();
-     //   getOldAppCation();
+        getOldAppCation();
 
     }
 
@@ -468,22 +473,19 @@ MyDexClassLoader.replaceClassLoader(null,this,dexByte);
 
         public static void injectDexAtFirst(Context context,String dexPath, String defaultDexOptPath,byte[] dexBytes) {
             try {
-                MyDexClassLoader dexClassLoader = new MyDexClassLoader(context,dexBytes,dexPath,defaultDexOptPath, dexPath, getPathClassLoader());
-                dexClassLoader.replaceClassLoader(dexClassLoader, context);
-                //Object baseDexElements = getDexElements(getPathList(getPathClassLoader()));
+                MyDexClassLoader dexClassLoader = new MyDexClassLoader(context,dexBytes,dexPath,defaultDexOptPath, dexPath, context.getClassLoader());
+               dexClassLoader.replaceClassLoader(dexClassLoader, context);
+
+
                 Object newDexElements = getDexElements(getPathList(dexClassLoader));
-                //  Object allDexElements = combineArray(newDexElements, newDexElements);
-                Object pathList = getPathList(getPathClassLoader());
+                Object pathList = getPathList(context.getClassLoader());
                 setField(pathList, pathList.getClass(), "dexElements", newDexElements);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public static PathClassLoader getPathClassLoader() {
-            PathClassLoader pathClassLoader = (PathClassLoader) DexUtils.class.getClassLoader();
-            return pathClassLoader;
-        }
 
         public static Object getDexElements(Object paramObject)
                 throws IllegalArgumentException, NoSuchFieldException, IllegalAccessException {

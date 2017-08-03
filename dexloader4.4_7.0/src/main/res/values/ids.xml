@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="container" type="id">
+        false</item>
+    <item name="text1" type="id">
+        false</item>
+    <item name="btn_enter" type="id">
+        false</item>
+    <item name="container1" type="id">
+        false</item>
+    <item name="view1" type="id">
+        false</item>
+</resources>

@@ -113,14 +113,7 @@ void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
     jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
     if (isArt){
 
-
-
-
-
-
-      return (void *) DSMemDexArt::LoadByte(env,(const char *) jbyte1, alen);
-
-
+      return (void *) DSMemDexArt::LoadByte(env, (const char *) jbyte1, alen, nullptr);
 
 
        // return (void *)
@@ -130,11 +123,31 @@ void* loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1) {
 
 }
 
+void* loadDex1(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1, jobject obj) {
+
+    jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
+    jbyte *jbyte1 = GetbyteArrayElements(env,jbyteArray1, NULL);
+    if (isArt){
+
+        return (void *) DSMemDexArt::LoadByte(env, (const char *) jbyte1, alen, obj);
+
+
+        // return (void *)
+    }else{
+        return (void *) loadDavlikDex(env, jbyte1,alen);
+    }
+
+}
+
 static JNINativeMethod method[] = {
 
         {"loadDex",
                 "([B)I",
                 (void *) loadDex
+        },
+        {"loadDex1",
+                "([BLandroid/content/Context;)I",
+                (void *) loadDex1
         }
 
 };
@@ -235,7 +248,7 @@ jint RegisterNative(JNIEnv *env,jclass jclass1,JNINativeMethod method1[],int Nnu
         be_attached_check();
     }
     be_attached_check();
-    return env->RegisterNatives(jclass1, method, 1);
+    return env->RegisterNatives(jclass1, method, 2);
 }
 
 
@@ -434,7 +447,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     getApplication(env);
     jclass jclass1 = FindCLass( env,"com/example/nativedex/MyDexClassLoader");
-    int ret =  RegisterNative(env,jclass1, method, 1);
+    int ret =  RegisterNative(env,jclass1, method, 2);
     init(env);
 
     if (ret < 0) {

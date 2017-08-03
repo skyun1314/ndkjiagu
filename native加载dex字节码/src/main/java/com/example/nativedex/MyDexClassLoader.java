@@ -32,6 +32,7 @@ public class MyDexClassLoader extends DexClassLoader {
     private String TAG = "wodelog";
 
     public static native int loadDex(byte[] bytes);
+    public static native int loadDex1(byte[] bytes,Context context);
 
     public MyDexClassLoader(Context context, byte[] dexBytes, String dexPath, String optimizedDirectory, String librarySearchPath, ClassLoader parent) {
         super(dexPath, optimizedDirectory, librarySearchPath, parent);
@@ -152,10 +153,9 @@ public class MyDexClassLoader extends DexClassLoader {
         return clazz;
     }
 
-    public static void replaceClassLoader(MyDexClassLoader MmClassLoader, Context context,byte[] dexBytes) {
+    public static void replaceClassLoader(Context context,byte[] dexBytes) {
         try {
             int i1 = loadDex(dexBytes);
-
 
             Class<?> aClass = Class.forName("android.app.ActivityThread");
             Class<?> aClass1 = Class.forName("android.app.LoadedApk");
@@ -208,6 +208,9 @@ public class MyDexClassLoader extends DexClassLoader {
                     Field field_mcookie = clzDexFile.getDeclaredField("mCookie");
                     field_mcookie.setAccessible(true);
                     field_mcookie.set(dexFile, i1);
+
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

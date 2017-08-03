@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-             dex15pbloader
+             DexPacker
 
              # Sets the library as a shared library.
              SHARED
@@ -18,7 +18,7 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             src/main/cpp/dex_15pb_loade.c
+             src/main/cpp/DexPacker.c
 
               )
 
@@ -44,7 +44,7 @@ find_library(android-lib android)
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       dex15pbloader
+                       DexPacker
 
                        # Links the target library to the log library
                        # included in the NDK.

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "com.bluelesson.apkprotect0"
+        applicationId "com.ali.tg.testapp"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define RTLD_LAZY 1
+//#define RTLD_LAZY 1
 static union { char c[4]; unsigned long mylong; }endian_test = {{ 'l', '?', '?', 'b' } };
 #define ENDIANNESS  ((char)endian_test.mylong)
 

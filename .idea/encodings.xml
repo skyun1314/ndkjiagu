@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Jni联系/src/main/cpp/MSHook/x86_64.h" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/dshell/src/main/cpp/MSHook/x86_64.h" charset="ISO-8859-1" />
+  </component>
+</project>
