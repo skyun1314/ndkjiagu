@@ -64,10 +64,12 @@ public class MyAppLication extends Application {
 
         byte[] dexByte;
         String  dexPath = null;
+        String  dexPath_jia = null;
         byte[] assets_byte=null;
         if (getPackageName().equals("com.example.nativedex")) {
             dexByte = FileUtil.copyDexToByte("classes.dex", this);
             dexPath = FileUtil.copyDex("classes.dex", this);
+            dexPath_jia = FileUtil.copyDex("classesjia.dex", this);
 
 
             FileUtil.copyDex("res.zip", this);
@@ -134,7 +136,7 @@ public class MyAppLication extends Application {
 
     private void replacecookie(String dexPath,byte[]dexByte) {
         try {
-            DexFile dexFile=DexFile.loadDex(dexPath,null,0);
+            DexFile dexFile=DexFile.loadDex(getPackageCodePath(),null,0);
             Field mCookie = dexFile.getClass().getDeclaredField("mCookie");
             mCookie.setAccessible(true);
            // int i1 = MyDexClassLoader.loadDex(dexByte);

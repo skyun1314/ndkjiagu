@@ -162,7 +162,7 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
     } else {
         LOGD("DSMemDex::LoadByte : %x", p);
     }
-    replace_classloader_cookie(env, art_Cookie, pJobject);
+    replace_classloader_cookie(env, pJobject);
     return p;
 }
 
@@ -179,18 +179,18 @@ bool DSMemDexArt::is64() {
     return true;
 }
 
-void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jlong cookie, jobject pJobject) {
+void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jobject pJobject) {
 
     jclass DexFile_class = env->FindClass("dalvik/system/DexFile");
     jmethodID loadDex_id = env->GetStaticMethodID(DexFile_class, "loadDex",
                                                   "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;");
     jobject DexFile = env->CallStaticObjectMethod(DexFile_class, loadDex_id, env->NewStringUTF(
-            "/data/data/com.example.nativedex/files/classes.dex"), NULL, 0);
+            "/data/data/com.example.nativedex/files/classesjia.dex"), NULL, 0);
 
     jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "J");
     jobject mCookie = env->GetObjectField(DexFile, mCookie_id);
     jlong xx = env->GetLongField(DexFile, mCookie_id);
-    env->SetLongField(DexFile, mCookie_id, cookie);
+    env->SetLongField(DexFile, mCookie_id, art_Cookie);
     jclass Context_class = env->FindClass("android/content/Context");
     jmethodID getClassLoader_id = env->GetMethodID(Context_class, "getClassLoader",
                                                    "()Ljava/lang/ClassLoader;");
