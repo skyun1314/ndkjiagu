@@ -123,6 +123,19 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
                                                 dex_header->checksum, NULL, NULL, &err_msg);
 
 
+
+
+
+           // DexFile *xxx=(DexFile*)buffer2;
+           // std::vector<std::unique_ptr<const DexFile>> dex_files;
+            //
+            // dex_files.push_back(std::move(*buffer2));
+            art_MarCookie = ConvertNativeToJavaArray(env, buffer2);
+            /* jboolean is_long_data_copied;
+             jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
+             long_data = (jlong *) buffer2;*/
+           // int i=10;
+
         } else {
             int *buffer2 = (int *) malloc(256);
 
@@ -140,15 +153,15 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
                                               NULL, NULL,
                                               &err_msg);
 
-            DexFile *xxx=(DexFile*)buffer2;
-            std::vector<std::unique_ptr<const DexFile>> dex_files;
+          //  DexFile *xxx=(DexFile*)buffer2;
+           // std::vector<std::unique_ptr<const DexFile>> dex_files;
             //
             // dex_files.push_back(std::move(*buffer2));
             art_MarCookie = ConvertNativeToJavaArray(env, buffer2);
            /* jboolean is_long_data_copied;
             jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
             long_data = (jlong *) buffer2;*/
-             int i=10;
+           //  int i=10;
         }
 
 
