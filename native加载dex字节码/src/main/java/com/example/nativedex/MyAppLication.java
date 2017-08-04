@@ -98,6 +98,7 @@ public class MyAppLication extends Application {
 
         Context applicationContext = this;
         MyDexClassLoader.loadDex(dexByte,applicationContext);
+       // replacecookie(dexPath,dexByte);
             //Log.e("wodelog","\ndex:"+bytesToHexString(sizeByoff));
 
 
@@ -117,7 +118,7 @@ public class MyAppLication extends Application {
       //  DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
 
 
-     // replacecookie(dexPath,dexByte);
+
 
 
       // MyDexClassLoader.replaceClassLoader(applicationContext,dexByte);

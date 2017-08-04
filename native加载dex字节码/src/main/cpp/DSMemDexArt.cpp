@@ -101,7 +101,6 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
     }
 
     OpenMemoryname = read->printElfSymbol();
-    int sdkVer = DSMemDexArt::sdkVersion();
     sdk_int = DSMemDexArt::sdkVersion();
 
     void *OpenMemoryname_sys = dlsym(handle1, OpenMemoryname);
@@ -111,7 +110,7 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
     const DexHeader *dex_header = reinterpret_cast<const DexHeader *>(base);
 
 
-    if (sdkVer >= 23) {
+    if (sdk_int >= 23) {
 
         if (is64()) {
             int *buffer2 = (int *) malloc(256);
@@ -133,10 +132,23 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
                                                                string *)) OpenMemoryname_sys;
 
 
-            p = org_artDexFileOpenMemory_6_0_32(buffer2, (const uint8_t *) base, size, location,
-                                                dex_header->checksum, NULL, NULL, &err_msg);
+          p=  org_artDexFileOpenMemory_6_0_32(buffer2,
+                                              (const uint8_t *) base,
+                                              size,
+                                              location,
+                                              dex_header->checksum,
+                                              NULL, NULL,
+                                              &err_msg);
 
-
+            DexFile *xxx=(DexFile*)buffer2;
+            std::vector<std::unique_ptr<const DexFile>> dex_files;
+            //
+            // dex_files.push_back(std::move(*buffer2));
+            art_MarCookie = ConvertNativeToJavaArray(env, buffer2);
+           /* jboolean is_long_data_copied;
+            jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
+            long_data = (jlong *) buffer2;*/
+             int i=10;
         }
 
 
@@ -185,12 +197,20 @@ void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jobject pJobject) {
     jmethodID loadDex_id = env->GetStaticMethodID(DexFile_class, "loadDex",
                                                   "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;");
     jobject DexFile = env->CallStaticObjectMethod(DexFile_class, loadDex_id, env->NewStringUTF(
-            "/data/data/com.example.nativedex/files/classesjia.dex"), NULL, 0);
+            "/data/data/com.example.nativedex/files/classes.dex"), NULL, 0);
 
-    jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "J");
-    jobject mCookie = env->GetObjectField(DexFile, mCookie_id);
-    jlong xx = env->GetLongField(DexFile, mCookie_id);
-    env->SetLongField(DexFile, mCookie_id, art_Cookie);
+
+    if (sdk_int >= 23) {
+        jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "Ljava/lang/Object;");
+        env->SetObjectField(DexFile, mCookie_id, art_MarCookie);
+        jobject jobject1 = env->GetObjectField(DexFile, mCookie_id);
+    } else {
+        jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "J");
+        jlong mCookie = env->GetLongField(DexFile, mCookie_id);
+        env->SetLongField(DexFile, mCookie_id, art_Cookie);
+    }
+
+
     jclass Context_class = env->FindClass("android/content/Context");
     jmethodID getClassLoader_id = env->GetMethodID(Context_class, "getClassLoader",
                                                    "()Ljava/lang/ClassLoader;");
@@ -220,3 +240,59 @@ void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jobject pJobject) {
 
 }
 
+jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env,void* buff) {
+
+    jlongArray long_array = env->NewLongArray(static_cast<jsize>(1));
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    jboolean is_long_data_copied= true;
+    jlong *long_data = env->GetLongArrayElements(long_array, &is_long_data_copied);
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    long_data = (jlong *) buff;
+
+    env->ReleaseLongArrayElements(long_array, long_data, 0);
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    return long_array;
+}
+
+
+jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env,
+                                                 std::vector<std::unique_ptr<const DexFile>> &vec) {
+    size_t vec_size = vec.size();
+    jlongArray long_array = env->NewLongArray(static_cast<jsize>(vec_size));
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    jboolean is_long_data_copied;
+    jlong *long_data = env->GetLongArrayElements(long_array, &is_long_data_copied);
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    jlong *tmp = long_data;
+    for (auto &dex_file : vec) {
+        *tmp = reinterpret_cast<uintptr_t>(dex_file.get());
+        tmp++;
+    }
+
+    env->ReleaseLongArrayElements(long_array, long_data, 0);
+    if (env->ExceptionCheck() == JNI_TRUE) {
+        return nullptr;
+    }
+
+    // Now release all the unique_ptrs.
+    for (auto &dex_file : vec) {
+        dex_file.release();
+    }
+
+    return long_array;
+}

@@ -29,6 +29,9 @@ public:
     static int sdk_int;//6.0
 
     static void replace_classloader_cookie(JNIEnv *pEnv,  jobject pJobject);
+
+    static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  void* buff);
+    static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  std::vector<std::unique_ptr<const DexFile>>& vec);
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H
