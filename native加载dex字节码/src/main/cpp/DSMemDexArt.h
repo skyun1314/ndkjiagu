@@ -31,7 +31,8 @@ public:
     static void replace_classloader_cookie(JNIEnv *pEnv,  jobject pJobject);
 
     static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  void* buff);
-    static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  std::vector<std::unique_ptr<const DexFile>>& vec);
+   // static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  std::vector<std::unique_ptr<const DexFile>>& vec);
+   static void replace_resouce(JNIEnv *env, jobject pJobject);
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H

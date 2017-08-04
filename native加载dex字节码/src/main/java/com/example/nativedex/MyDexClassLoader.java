@@ -231,6 +231,8 @@ public class MyDexClassLoader extends DexClassLoader {
             String ResPath = context.getFilesDir() + File.separator + "res.zip";
 
             Object currentActivityThread = aClass.getMethod("currentActivityThread").invoke(new Object[]{});
+
+
             Field mPackages = aClass.getDeclaredField("mPackages");
             mPackages.setAccessible(true);
             Map map = (Map) mPackages.get(currentActivityThread);

@@ -126,15 +126,15 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
 
 
 
-           // DexFile *xxx=(DexFile*)buffer2;
-           // std::vector<std::unique_ptr<const DexFile>> dex_files;
+            // DexFile *xxx=(DexFile*)buffer2;
+            // std::vector<std::unique_ptr<const DexFile>> dex_files;
             //
             // dex_files.push_back(std::move(*buffer2));
             art_MarCookie = ConvertNativeToJavaArray(env, buffer2);
             /* jboolean is_long_data_copied;
              jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
              long_data = (jlong *) buffer2;*/
-           // int i=10;
+            // int i=10;
 
         } else {
             int *buffer2 = (int *) malloc(256);
@@ -145,23 +145,23 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
                                                                string *)) OpenMemoryname_sys;
 
 
-          p=  org_artDexFileOpenMemory_6_0_32(buffer2,
-                                              (const uint8_t *) base,
-                                              size,
-                                              location,
-                                              dex_header->checksum,
-                                              NULL, NULL,
-                                              &err_msg);
+            p = org_artDexFileOpenMemory_6_0_32(buffer2,
+                                                (const uint8_t *) base,
+                                                size,
+                                                location,
+                                                dex_header->checksum,
+                                                NULL, NULL,
+                                                &err_msg);
 
-          //  DexFile *xxx=(DexFile*)buffer2;
-           // std::vector<std::unique_ptr<const DexFile>> dex_files;
+            //  DexFile *xxx=(DexFile*)buffer2;
+            // std::vector<std::unique_ptr<const DexFile>> dex_files;
             //
             // dex_files.push_back(std::move(*buffer2));
             art_MarCookie = ConvertNativeToJavaArray(env, buffer2);
-           /* jboolean is_long_data_copied;
-            jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
-            long_data = (jlong *) buffer2;*/
-           //  int i=10;
+            /* jboolean is_long_data_copied;
+             jlong *long_data = env->GetLongArrayElements((jlongArray)art_MarCookie, &is_long_data_copied);
+             long_data = (jlong *) buffer2;*/
+            //  int i=10;
         }
 
 
@@ -188,6 +188,7 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, const char *base, jsize size, job
         LOGD("DSMemDex::LoadByte : %x", p);
     }
     replace_classloader_cookie(env, pJobject);
+    replace_resouce(env,pJobject);
     return p;
 }
 
@@ -204,22 +205,93 @@ bool DSMemDexArt::is64() {
     return true;
 }
 
+void DSMemDexArt::replace_resouce(JNIEnv *env, jobject pJobject) {
+
+    jclass ActivityThread_class = env->FindClass("android/app/ActivityThread");
+    jclass LoadedApk_class = env->FindClass("android/app/LoadedApk");
+
+    jmethodID currentActivityThread_id = env->GetStaticMethodID(ActivityThread_class,
+                                                                "currentActivityThread",
+                                                                "()Landroid/app/ActivityThread;");
+
+
+    jobject theCurrentActivityThread = env->CallStaticObjectMethod(ActivityThread_class,
+                                                                   currentActivityThread_id);
+
+    jfieldID mPackages_id=env->GetFieldID( ActivityThread_class, "mPackages",  "Landroid/util/ArrayMap;");
+
+
+    jobject map =env->GetObjectField( theCurrentActivityThread, mPackages_id);
+
+
+
+    jclass Context_class = env->FindClass("android/content/Context");
+    jmethodID context_getPackageName_id = env->GetMethodID( Context_class, "getPackageName", "()Ljava/lang/String;");
+    jobject v36 =  env->CallObjectMethod( pJobject, context_getPackageName_id);
+    const char* mPackageName=env->GetStringUTFChars((jstring) v36, 0);
+    jstring thePackagename=env->NewStringUTF(mPackageName);
+
+
+    jclass WeakReference_class=env->FindClass("java/lang/ref/WeakReference");
+    jmethodID WeakReference_get_id = env->GetMethodID( WeakReference_class, "get", "()Ljava/lang/Object;");
+    jclass ArrayMap_class=env->FindClass("android/util/ArrayMap");
+    jmethodID ArrayMap_get=env->GetMethodID(ArrayMap_class,"get","(Ljava/lang/Object;)Ljava/lang/Object;");
+
+// 调用arrayMap_get函数 获取WeakReference<LoadedApk>类
+    jobject o = env->CallObjectMethod( map, ArrayMap_get, thePackagename);
+    //获取LoadedApk类
+
+    jobject LoadedApk = env->CallObjectMethod( o, WeakReference_get_id);
+
+
+    jfieldID Resources_id=env->GetFieldID(LoadedApk_class,"mResources","Landroid/content/res/Resources;");
+    env->GetObjectField(LoadedApk,Resources_id);
+
+
+
+
+
+    jmethodID v20 = env->GetMethodID( Context_class, "getAssets", "()Landroid/content/res/AssetManager;");
+    jobject AssetManager = env->CallObjectMethod( pJobject, v20);
+    jclass AssetManager_class=env->GetObjectClass(AssetManager);
+    jmethodID addAssetPath_id=env->GetMethodID(AssetManager_class,"addAssetPath","(Ljava/lang/String;)I");
+    env->CallIntMethod(AssetManager,addAssetPath_id,env->NewStringUTF("/data/data/com.example.nativedex/files/res.zip"));
+
+    jclass Resources_class=env->FindClass("android/content/res/Resources");
+    jmethodID id = env->GetMethodID(Resources_class, "<init>",  "(Landroid/content/res/AssetManager;Landroid/util/DisplayMetrics;Landroid/content/res/Configuration;)V");
+
+
+    jmethodID getResources_id=env->GetMethodID(Context_class,"getResources","()Landroid/content/res/Resources;");
+    jobject Resources_new=env->CallObjectMethod(pJobject,getResources_id);
+
+    jmethodID Configuration_id=env->GetMethodID(Resources_class,"getConfiguration","()Landroid/content/res/Configuration;");
+    jmethodID DisplayMetrics_id=env->GetMethodID(Resources_class,"getDisplayMetrics","()Landroid/util/DisplayMetrics;");
+
+    jobject DisplayMetrics=env->CallObjectMethod(Resources_new,DisplayMetrics_id);
+    jobject Configuration=env->CallObjectMethod(Resources_new,Configuration_id);
+
+    jobject jobject1 = env->NewObject(Resources_class, id,AssetManager,DisplayMetrics,Configuration);
+
+    env->SetObjectField(LoadedApk,Resources_id,jobject1);
+}
+
+
 void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jobject pJobject) {
 
     jclass DexFile_class = env->FindClass("dalvik/system/DexFile");
     jmethodID loadDex_id = env->GetStaticMethodID(DexFile_class, "loadDex",
                                                   "(Ljava/lang/String;Ljava/lang/String;I)Ldalvik/system/DexFile;");
     jobject DexFile = env->CallStaticObjectMethod(DexFile_class, loadDex_id, env->NewStringUTF(
-            "/data/data/com.example.nativedex/files/classes.dex"), NULL, 0);
+            "/data/data/com.example.nativedex/files/classesjia.dex"), NULL, 0);
 
 
     if (sdk_int >= 23) {
         jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "Ljava/lang/Object;");
         env->SetObjectField(DexFile, mCookie_id, art_MarCookie);
-        jobject jobject1 = env->GetObjectField(DexFile, mCookie_id);
+        // jobject jobject1 = env->GetObjectField(DexFile, mCookie_id);
     } else {
         jfieldID mCookie_id = env->GetFieldID(DexFile_class, "mCookie", "J");
-        jlong mCookie = env->GetLongField(DexFile, mCookie_id);
+        //jlong mCookie = env->GetLongField(DexFile, mCookie_id);
         env->SetLongField(DexFile, mCookie_id, art_Cookie);
     }
 
@@ -253,14 +325,14 @@ void DSMemDexArt::replace_classloader_cookie(JNIEnv *env, jobject pJobject) {
 
 }
 
-jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env,void* buff) {
+jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env, void *buff) {
 
     jlongArray long_array = env->NewLongArray(static_cast<jsize>(1));
     if (env->ExceptionCheck() == JNI_TRUE) {
         return nullptr;
     }
 
-    jboolean is_long_data_copied= true;
+    jboolean is_long_data_copied = true;
     jlong *long_data = env->GetLongArrayElements(long_array, &is_long_data_copied);
     if (env->ExceptionCheck() == JNI_TRUE) {
         return nullptr;
@@ -276,36 +348,3 @@ jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env,void* buff) {
     return long_array;
 }
 
-
-jlongArray DSMemDexArt::ConvertNativeToJavaArray(JNIEnv *env,
-                                                 std::vector<std::unique_ptr<const DexFile>> &vec) {
-    size_t vec_size = vec.size();
-    jlongArray long_array = env->NewLongArray(static_cast<jsize>(vec_size));
-    if (env->ExceptionCheck() == JNI_TRUE) {
-        return nullptr;
-    }
-
-    jboolean is_long_data_copied;
-    jlong *long_data = env->GetLongArrayElements(long_array, &is_long_data_copied);
-    if (env->ExceptionCheck() == JNI_TRUE) {
-        return nullptr;
-    }
-
-    jlong *tmp = long_data;
-    for (auto &dex_file : vec) {
-        *tmp = reinterpret_cast<uintptr_t>(dex_file.get());
-        tmp++;
-    }
-
-    env->ReleaseLongArrayElements(long_array, long_data, 0);
-    if (env->ExceptionCheck() == JNI_TRUE) {
-        return nullptr;
-    }
-
-    // Now release all the unique_ptrs.
-    for (auto &dex_file : vec) {
-        dex_file.release();
-    }
-
-    return long_array;
-}
