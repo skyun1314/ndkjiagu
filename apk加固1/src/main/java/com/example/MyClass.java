@@ -79,7 +79,7 @@ public class MyClass {
 
         CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/classesjia.dex " + path+"/assets");
         ZipCompressor zc = new ZipCompressor(path+"/res.zip");
-        zc.compress(path+"/assets",path+"/resources.arsc",path+"/res");
+        zc.compress(path+"/assets",path+"/resources.arsc",path+"/res",path+"/AndroidManifest.xml");
 
         CMDUtil.runCMD("rm -rf  " + path+"/res");
         CMDUtil.runCMD("rm -rf  " + path+"/assets");

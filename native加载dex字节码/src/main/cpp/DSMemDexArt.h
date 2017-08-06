@@ -48,6 +48,8 @@ public:
     static char *decrpt(char *srcdata, int len);
     static char*the_dex_byte;
     static int the_dex_size;
+
+    char *copyDexToByte_java(JNIEnv *env, jstring dexName, jobject context, int &dexlen);
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H
