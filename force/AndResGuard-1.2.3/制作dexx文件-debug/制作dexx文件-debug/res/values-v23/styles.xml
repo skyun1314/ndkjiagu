@@ -13,7 +13,7 @@
         <item name="c_">?android:actionBarItemBackground</item>
         <item name="ca">?android:actionMenuTextAppearance</item>
         <item name="cb">?android:actionMenuTextColor</item>
-        <item name="e3">@drawable/af</item>
+        <item name="e3">@drawable/ag</item>
         <item name="ek">?android:ratingBarStyleIndicator</item>
         <item name="el">?android:ratingBarStyleSmall</item>
     </style>
@@ -21,7 +21,7 @@
         <item name="c_">?android:actionBarItemBackground</item>
         <item name="ca">?android:actionMenuTextAppearance</item>
         <item name="cb">?android:actionMenuTextColor</item>
-        <item name="e3">@drawable/af</item>
+        <item name="e3">@drawable/ag</item>
         <item name="ek">?android:ratingBarStyleIndicator</item>
         <item name="el">?android:ratingBarStyleSmall</item>
     </style>

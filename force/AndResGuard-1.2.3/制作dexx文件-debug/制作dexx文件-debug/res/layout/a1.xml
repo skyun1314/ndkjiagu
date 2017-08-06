@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:weightSum="1.0"
   xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="我是制作的dex文件" app:h="j" app:w="j" app:a0="j" app:a5="j" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="我是制作的dex文件" />
     <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="跳转" android:onClick="haha" />
-</android.support.constraint.ConstraintLayout>
+    <ImageView android:layout_width="wrap_content" android:layout_height="201.0dip" android:src="@drawable/a8" />
+    <TextView android:id="@id/bu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.07" />
+</LinearLayout>

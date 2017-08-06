@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,8 +56,7 @@ public class MyAppLication extends Application {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
-
-        byte[] bytes1 = readDexFileFromApk();
+      /*  byte[] bytes1 = readDexFileFromApk();
 
 
 
@@ -94,10 +92,21 @@ public class MyAppLication extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         Context applicationContext = this;
-        MyDexClassLoader.loadDex(dexByte,applicationContext);
+        MyDexClassLoader.loadDex(new byte[1024] ,applicationContext);
+
+        Resources mResources = getResources();
+
+        int raw = mResources.getIdentifier("activity_main", "raw", "com.example.nativedex");
+        Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
+        Log.e("wodelog", "-----------------------------");
+        Log.e("wodelog", "getFromAssets:" + getFromAssets("activity_main.xml", this, mResources));
+        Log.e("wodelog", "-----------------------------");
+
+
+
        // replacecookie(dexPath,dexByte);
             //Log.e("wodelog","\ndex:"+bytesToHexString(sizeByoff));
 

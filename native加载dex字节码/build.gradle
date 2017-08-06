@@ -16,6 +16,8 @@ android {
             cmake {
                 cppFlags ""
                cppFlags.add("-std=c++11")
+               cppFlags.add("-landroid")
+               cppFlags.add("-lz")
                 /*   cppFlags.add("-Wwritable-strings")*/
 
             }

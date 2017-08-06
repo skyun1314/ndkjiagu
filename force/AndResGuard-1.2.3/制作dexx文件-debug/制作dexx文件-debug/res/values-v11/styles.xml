@@ -109,9 +109,9 @@
         <item name="android:listChoiceIndicatorSingle">@drawable/e</item>
         <item name="android:listChoiceIndicatorMultiple">@drawable/b</item>
         <item name="android:colorBackgroundCacheHint">@color/bi</item>
-        <item name="android:textSelectHandleLeft">@drawable/bl</item>
-        <item name="android:textSelectHandleRight">@drawable/bp</item>
-        <item name="android:textSelectHandle">@drawable/bn</item>
+        <item name="android:textSelectHandleLeft">@drawable/bm</item>
+        <item name="android:textSelectHandleRight">@drawable/bq</item>
+        <item name="android:textSelectHandle">@drawable/bo</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:textColorAlertDialogListItem">@color/b5</item>
         <item name="android:actionModeCutDrawable">?ch</item>
@@ -154,9 +154,9 @@
         <item name="android:listChoiceIndicatorMultiple">@drawable/b</item>
         <item name="android:textColorPrimaryInverseDisableOnly">@color/b3</item>
         <item name="android:colorBackgroundCacheHint">@color/bj</item>
-        <item name="android:textSelectHandleLeft">@drawable/bm</item>
-        <item name="android:textSelectHandleRight">@drawable/bq</item>
-        <item name="android:textSelectHandle">@drawable/bo</item>
+        <item name="android:textSelectHandleLeft">@drawable/bn</item>
+        <item name="android:textSelectHandleRight">@drawable/br</item>
+        <item name="android:textSelectHandle">@drawable/bp</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:textColorAlertDialogListItem">@color/b6</item>
         <item name="android:actionModeCutDrawable">?ch</item>

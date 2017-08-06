@@ -4,14 +4,14 @@
     <selector>
         <item android:state_checked="false" android:state_pressed="false">
             <layer-list>
-                <item android:drawable="@drawable/bs" />
-                <item android:drawable="@drawable/bi" />
+                <item android:drawable="@drawable/bt" />
+                <item android:drawable="@drawable/bj" />
             </layer-list>
         </item>
         <item>
             <layer-list>
-                <item android:drawable="@drawable/br" />
-                <item android:drawable="@drawable/bi" />
+                <item android:drawable="@drawable/bs" />
+                <item android:drawable="@drawable/bj" />
             </layer-list>
         </item>
     </selector>

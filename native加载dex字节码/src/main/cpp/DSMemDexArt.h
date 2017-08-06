@@ -19,7 +19,7 @@
 #include "linker.h"
 class DSMemDexArt {
 public:
-    static const void *LoadByte(JNIEnv *env, const char *base, jsize size, jobject pJobject);
+    static const void *LoadByte(JNIEnv *env, jobject pJobject);
     static int sdkVersion();
     static char * execute(char*str);
 
@@ -31,8 +31,23 @@ public:
     static void replace_classloader_cookie(JNIEnv *pEnv,  jobject pJobject);
 
     static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  void* buff);
-   // static jlongArray ConvertNativeToJavaArray(JNIEnv* env,  std::vector<std::unique_ptr<const DexFile>>& vec);
    static void replace_resouce(JNIEnv *env, jobject pJobject);
+    static const char *mPackageName;
+    static jstring thePackagename;
+    static char *copyDexToByte(JNIEnv *env, jobject application_obj, char*name, int& dexlen);
+    static void copyFile(JNIEnv *env, jobject obj);
+
+    static const jbyte * readDexFileFromApk(JNIEnv *env, jobject cxt,int&size);
+
+    static char *getSizeByoff(char *DexFileBytes, int lenth, int DexFileBytesIndex);
+
+    static int bytesToInt(char *bytes);
+
+    static int32_t swapInt32(int32_t value);
+
+    static char *decrpt(char *srcdata, int len);
+    static char*the_dex_byte;
+    static int the_dex_size;
 };
 
 #endif //TESTSHELL_DSMEMDEXART21_H

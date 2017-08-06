@@ -2,15 +2,15 @@
 <selector android:constantSize="true"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false" android:state_pressed="true">
-        <bitmap android:gravity="center" android:src="@drawable/bd" />
+        <bitmap android:gravity="center" android:src="@drawable/be" />
     </item>
     <item android:state_enabled="false">
-        <bitmap android:gravity="center" android:src="@drawable/bd" />
+        <bitmap android:gravity="center" android:src="@drawable/be" />
     </item>
     <item android:state_pressed="true">
-        <bitmap android:gravity="center" android:src="@drawable/bf" />
+        <bitmap android:gravity="center" android:src="@drawable/bg" />
     </item>
     <item>
-        <bitmap android:gravity="center" android:src="@drawable/be" />
+        <bitmap android:gravity="center" android:src="@drawable/bf" />
     </item>
 </selector>

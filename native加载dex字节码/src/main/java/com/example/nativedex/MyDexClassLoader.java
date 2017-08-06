@@ -303,8 +303,8 @@ public class MyDexClassLoader extends DexClassLoader {
         }
         Resources mResources = new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
 
-        Resources.Theme mTheme = mResources.newTheme();
-        mTheme.setTo(context.getTheme());
+       // Resources.Theme mTheme = mResources.newTheme();
+        //mTheme.setTo(context.getTheme());
         int raw = mResources.getIdentifier("activity_main", "raw", "com.example.dexx");
         Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
         Log.e("wodelog", "-----------------------------");

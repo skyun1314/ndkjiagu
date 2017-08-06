@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="我是制作的dex文件" app:h="j" app:w="j" app:a0="j" app:a5="j" />
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="跳转" android:onClick="haha" />
-</android.support.constraint.ConstraintLayout>
