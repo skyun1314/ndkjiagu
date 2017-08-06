@@ -494,7 +494,7 @@ void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
     mkdir(szPathxx, 0755);
     int len;
 
-    if (strcmp(mPackageName, "com.example.nativedex1") == 0) {
+    if (strcmp(mPackageName, "com.example.nativedex") == 0) {
         copyDexToByte(env, obj, "res.zip", len);
 
         the_dex_byte = DSMemDexArt::copyDexToByte(env, obj, "classes.dex", the_dex_size);
