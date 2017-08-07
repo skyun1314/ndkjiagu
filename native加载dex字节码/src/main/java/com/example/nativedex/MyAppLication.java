@@ -51,12 +51,18 @@ public class MyAppLication extends Application {
         return srcdata;
     }
 
+    public native void  attachBaseContext(Context base);
+
+
+/*
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
 
-      /*  byte[] bytes1 = readDexFileFromApk();
+      */
+/*  byte[] bytes1 = readDexFileFromApk();
 
 
 
@@ -92,7 +98,8 @@ public class MyAppLication extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }*/
+        }*//*
+
 
 
 
@@ -100,14 +107,6 @@ public class MyAppLication extends Application {
         Context applicationContext = this;
         MyDexClassLoader.loadDex(new byte[1024] ,applicationContext);
        // MyDexClassLoader.replaceResouce(this);
-
-        Resources mResources = getResources();
-
-        int raw = mResources.getIdentifier("a", "raw", "com.example.nativedex");
-        Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
-        Log.e("wodelog", "-----------------------------");
-        Log.e("wodelog", "getFromAssets:" + getFromAssets("activity_main.xml", this, mResources));
-        Log.e("wodelog", "-----------------------------");
 
 
 
@@ -117,7 +116,8 @@ public class MyAppLication extends Application {
 
         // String path = FileUtil.copyDex("classes.dex", this);
 
-    /*    myDexClassLoader = new MyDexClassLoader(
+    */
+/*    myDexClassLoader = new MyDexClassLoader(
                 this,
                 dexByte,
                 dexPath,// getPackageResourcePath(),
@@ -125,7 +125,8 @@ public class MyAppLication extends Application {
                 null,
                 getClassLoader()
         );
-        myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*/
+        myDexClassLoader.replaceClassLoader(myDexClassLoader,this);*//*
+
 
 
       //  DexUtils.injectDexAtFirst(this,dexPath, getDir(".dex", MODE_PRIVATE).getAbsolutePath(),dexByte);
@@ -137,16 +138,19 @@ public class MyAppLication extends Application {
       // MyDexClassLoader.replaceClassLoader(applicationContext,dexByte);
 
 
-      /*  try {
+      */
+/*  try {
             Object newDexElements = DexUtils.getDexElements(DexUtils.getPathList(getClassLoader()));
             Object pathList = DexUtils.getPathList(getPathClassLoader());
             DexUtils.setField(pathList, pathList.getClass(), "dexElements", newDexElements);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }*//*
+
 
 
     }
+*/
 
     private void replacecookie(String dexPath,byte[]dexByte) {
         try {

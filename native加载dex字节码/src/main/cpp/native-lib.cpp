@@ -116,7 +116,7 @@ jint loadDavlikDex(JNIEnv *env) {
 
 
 
-void *loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1, jobject obj) {
+void *loadDex(JNIEnv *env, jobject jobject1,  jobject obj) {
 
 
 
@@ -137,8 +137,8 @@ void *loadDex(JNIEnv *env, jobject jobject1, jbyteArray jbyteArray1, jobject obj
 
 static JNINativeMethod method[] = {
 
-        {"loadDex",
-                "([BLandroid/content/Context;)I",
+        {"attachBaseContext",
+                "(Landroid/content/Context;)V",
                 (void *) loadDex
         }
 
@@ -352,12 +352,7 @@ jobject getGlobalContext(JNIEnv *env) {
     return context;
 }
 
-void haha2(JNIEnv *env) {
-    jclass MyDexClassLoader = env->FindClass("com/example/nativedex/MyDexClassLoader");
-    jmethodID haha1 = env->GetStaticMethodID(MyDexClassLoader, "haha1", "()V");
-    jobject jobject1 = getGlobalContext(env);
-    env->CallStaticVoidMethod(MyDexClassLoader, haha1);
-}
+
 
 char *jstringTostring(JNIEnv *env, jstring str) {
     char *rtn = NULL;
@@ -429,7 +424,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return result;
     }
     getApplication(env);
-    jclass jclass1 = FindCLass(env, "com/example/nativedex/MyDexClassLoader");
+    jclass jclass1 = FindCLass(env, "com/example/nativedex/MyAppLication");
     int ret = RegisterNative(env, jclass1, method, 1);
     init(env);
 
