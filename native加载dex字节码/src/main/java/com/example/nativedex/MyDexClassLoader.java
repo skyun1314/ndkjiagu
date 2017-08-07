@@ -153,9 +153,8 @@ public class MyDexClassLoader extends DexClassLoader {
         return clazz;
     }
 
-    public static void replaceClassLoader(Context context,byte[] dexBytes) {
+    public static void replaceResouce(Context context) {
         try {
-            int i1 = loadDex(dexBytes,context);
 
             Class<?> aClass = Class.forName("android.app.ActivityThread");
             Class<?> aClass1 = Class.forName("android.app.LoadedApk");
@@ -182,40 +181,6 @@ public class MyDexClassLoader extends DexClassLoader {
             mResDir.set(loadedapk, ResPath);
             mResources.set(loadedapk, loadResources(ResPath, context));
 
-            Object classLoader = mClassLoader.get(loadedapk);
-            Class clzBaseDexClassLoader = Class.forName("dalvik.system.BaseDexClassLoader");
-            Class clzDexPathList = Class.forName("dalvik.system.DexPathList");
-            Field field_pathList = clzBaseDexClassLoader.getDeclaredField("pathList");
-            field_pathList.setAccessible(true);
-            Object dexPathList = field_pathList.get(classLoader);
-            Field field_dexElements = clzDexPathList.getDeclaredField("dexElements");
-            field_dexElements.setAccessible(true);
-            Class clzElement = Class.forName("dalvik.system.DexPathList$Element");
-            Object dexElemennts = field_dexElements.get(dexPathList);
-
-            //int cookie=MmClassLoader.getcookie();
-            int length = Array.getLength(dexElemennts);
-
-            for (int i = 0; i < length; i++) {
-                Object ele = Array.get(dexElemennts, i);
-
-                try {
-                    Field field_dexFile = clzElement.getDeclaredField("dexFile");
-                    field_dexFile.setAccessible(true);
-                    Object dexFile = field_dexFile.get(ele);
-
-                    Class clzDexFile = Class.forName("dalvik.system.DexFile");
-                    Field field_mcookie = clzDexFile.getDeclaredField("mCookie");
-                    field_mcookie.setAccessible(true);
-                    field_mcookie.set(dexFile, i1);
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
 
 
         } catch (Exception e) {
@@ -303,9 +268,9 @@ public class MyDexClassLoader extends DexClassLoader {
         }
         Resources mResources = new Resources(assetManager, context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
 
-       // Resources.Theme mTheme = mResources.newTheme();
-        //mTheme.setTo(context.getTheme());
-        int raw = mResources.getIdentifier("activity_main", "raw", "com.example.dexx");
+        Resources.Theme mTheme = mResources.newTheme();
+        mTheme.setTo(context.getTheme());
+        int raw = mResources.getIdentifier("a", "raw", "com.example.dexx");
         Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
         Log.e("wodelog", "-----------------------------");
         Log.e("wodelog", "getFromAssets:" + getFromAssets("activity_main.xml", context, mResources));

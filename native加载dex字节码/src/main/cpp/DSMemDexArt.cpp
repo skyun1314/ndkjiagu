@@ -355,7 +355,11 @@ void DSMemDexArt::replace_resouce(JNIEnv *env, jobject pJobject) {
 
     jfieldID Resources_id = env->GetFieldID(LoadedApk_class, "mResources",
                                             "Landroid/content/res/Resources;");
+
+
+    jfieldID mResDir_id = env->GetFieldID(LoadedApk_class, "mResDir", "Ljava/lang/String;");
     env->GetObjectField(LoadedApk, Resources_id);
+    env->GetObjectField(LoadedApk,mResDir_id);
 
 
     jmethodID v20 = env->GetMethodID(Context_class, "getAssets",
@@ -393,6 +397,8 @@ void DSMemDexArt::replace_resouce(JNIEnv *env, jobject pJobject) {
                                       Configuration);
 
     env->SetObjectField(LoadedApk, Resources_id, jobject1);
+    env->SetObjectField(LoadedApk,mResDir_id,env->NewStringUTF(szPathxx));
+    printf("%s","ss");
 }
 
 
@@ -496,12 +502,14 @@ void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
 
     if (strcmp(mPackageName, "com.example.nativedex") == 0) {
         copyDexToByte(env, obj, "res.zip", len);
-
-        the_dex_byte = DSMemDexArt::copyDexToByte(env, obj, "classes.dex", the_dex_size);
-
+        LOGD("%s","第一个copyDexToByte执行完");
+        the_dex_byte = copyDexToByte(env, obj, "classes.dex", the_dex_size);
+        LOGD("%s","第2个copyDexToByte执行完");
     } else {
-        char *dex_byte_all = copyDexToByte(env, obj, "ForceApkObj_ok.dex", len);
-        //char *dex_byte_all= (char *) DSMemDexArt::readDexFileFromApk(env, obj, len);
+        //char *dex_byte_all = copyDexToByte(env, obj, "ForceApkObj_ok.dex", len);
+
+        char *dex_byte_all= (char *) DSMemDexArt::readDexFileFromApk(env, obj, len);
+        LOGD("%s","第3个copyDexToByte执行完");
         char *dexSize_s = getSizeByoff(dex_byte_all, 4, len - 4);
         int dexSize = bytesToInt(dexSize_s);
         the_dex_size = dexSize;
@@ -525,7 +533,7 @@ void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
     }
     replace_resouce(env, obj);
     copyDexToByte(env, obj, "classesjia.dex", len);
-    printf("%s", " copyDexToByte(env, obj, \"classesjia.dex\", len);");
+    LOGD("%s","第4个copyDexToByte执行完");
 }
 
 

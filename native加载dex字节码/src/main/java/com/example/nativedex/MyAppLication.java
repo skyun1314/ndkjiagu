@@ -94,12 +94,16 @@ public class MyAppLication extends Application {
             }
         }*/
 
+
+
+
         Context applicationContext = this;
         MyDexClassLoader.loadDex(new byte[1024] ,applicationContext);
+       // MyDexClassLoader.replaceResouce(this);
 
         Resources mResources = getResources();
 
-        int raw = mResources.getIdentifier("activity_main", "raw", "com.example.nativedex");
+        int raw = mResources.getIdentifier("a", "raw", "com.example.nativedex");
         Log.e("wodelog", "getFromRaw:" + getFromRaw(raw, mResources));
         Log.e("wodelog", "-----------------------------");
         Log.e("wodelog", "getFromAssets:" + getFromAssets("activity_main.xml", this, mResources));
@@ -173,7 +177,7 @@ public class MyAppLication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        getOldAppCation();
+    //    getOldAppCation();
 
     }
 

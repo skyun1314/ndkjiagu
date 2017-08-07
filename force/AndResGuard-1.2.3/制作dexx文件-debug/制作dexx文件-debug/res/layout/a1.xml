@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:weightSum="1.0"
-  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="我是制作的dex文件" />
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="跳转" android:onClick="haha" />
-    <ImageView android:layout_width="wrap_content" android:layout_height="201.0dip" android:src="@drawable/a8" />
-    <TextView android:id="@id/bu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.07" />
-</LinearLayout>

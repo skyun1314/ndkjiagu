@@ -44,15 +44,37 @@ public class MyApplication extends Application {
             Field mResources = aClass1.getDeclaredField("mResources");
             mResDir.setAccessible(true);
             mResources.setAccessible(true);
-            String mResDir_str = (String) mResDir.get(loadedapk);
-            Resources mResources_str = (Resources) mResources.get(loadedapk);
+            String mResDir_str_yuanshi = (String) mResDir.get(loadedapk);
+            Resources mResources_yuanshi = (Resources) mResources.get(loadedapk);
 
 
-            mResDir.set(loadedapk,ResPath);
-            mResources.set(loadedapk,loadResources(ResPath,base));
+          mResDir.set(loadedapk,ResPath);
+            Resources resources = loadResources(ResPath, base);
+            mResources.set(loadedapk,resources);
+
+
+            String mResDir_str_xiugai = (String) mResDir.get(loadedapk);
+            Resources mResources_xiugai = (Resources) mResources.get(loadedapk);
+
+            Resources mResources_api = getResources();
+
+            Log.e("wodelog","haha");
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        int xxx=R.layout.activityxx;
+
+        Resources mResources = getResources();
+
+        int raw = mResources.getIdentifier("activity_main", "raw","com.example.dexx");
+        Log.e("wodelog","getFromRaw:"+getFromRaw(raw,mResources));
+        Log.e("wodelog","-----------------------------");
+        Log.e("wodelog","getFromAssets:"+ getFromAssets("activity_main.xml",this,mResources));
+        Log.e("wodelog","-----------------------------");
+
+
+
     }
 
 

@@ -87,7 +87,7 @@ public class MyClass {
 
 
 
-        DexUtil.DexWith("force/ForceApkObj.dex",path+"/res.zip",path+"/classes1.dex");
+        DexUtil.DexWith("/Users/zk/Desktop/netive_dex/ForceApkObj.dex",path+"/res.zip",path+"/classes1.dex");
 
         DexUtil.DexWith(path+"/classes1.dex",path+"/classes.dex",path+"/classes.dex");
         CMDUtil.runCMD("cp -r /Users/zk/Desktop/netive_dex/lib " + path);
