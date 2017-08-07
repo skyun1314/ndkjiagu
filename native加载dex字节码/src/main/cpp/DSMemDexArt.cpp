@@ -17,10 +17,10 @@ int DSMemDexArt::the_dex_size;
 const char *DSMemDexArt::mPackageName;
 jstring DSMemDexArt::thePackagename;
 
-
 int dvm_Cookie = 0;//4.4
 jlong art_Cookie = 0;//5.0-5.1
 jobject art_MarCookie = 0;//6.0
+
 
 
 const void *
@@ -79,6 +79,27 @@ char *DSMemDexArt::execute(char *str) {
     }
     pclose(fstream);
     return buff;
+}
+
+void DSMemDexArt::_onCreate(JNIEnv *env,jobject context) {
+    // string appClassName = NULL;
+    jclass Context_class = env->FindClass("android/content/Context");
+    jmethodID context_getApplicationInfo = env->GetMethodID(Context_class,
+                                                            "getApplicationInfo",
+                                                            "()Landroid/content/pm/ApplicationInfo;");
+
+    jobject ApplicationInfo_ = env->CallObjectMethod(context,  context_getApplicationInfo);
+    jclass ApplicationInfo_class = env->GetObjectClass(ApplicationInfo_);
+    jfieldID metaData_id = env->GetFieldID(ApplicationInfo_class, "metaData",  "L/android/os/Bundle;");
+
+    jobject metaData = env->GetObjectField(ApplicationInfo_, metaData_id);
+    jclass metaData_class = env->GetObjectClass(metaData);
+    jmethodID containsKey_id = env->GetMethodID(metaData_class, "containsKey",
+                                                "(Ljava/lang/String;)Z");
+    jboolean has = env->CallBooleanMethod(metaData, containsKey_id,
+                                          env->NewStringUTF("APPLICATION_CLASS_NAME"));
+
+
 }
 
 const jbyte *DSMemDexArt::readDexFileFromApk(JNIEnv *env, jobject cxt, int &size) {
@@ -178,7 +199,7 @@ const jbyte *DSMemDexArt::readDexFileFromApk(JNIEnv *env, jobject cxt, int &size
 }
 
 
-const void *DSMemDexArt::LoadByte(JNIEnv *env, jobject pJobject) {
+const void *DSMemDexArt::LoadByte(JNIEnv *env, const jobject pJobject) {
     std::string location = "";
     std::string err_msg;
     char *OpenMemoryname;
@@ -293,7 +314,7 @@ const void *DSMemDexArt::LoadByte(JNIEnv *env, jobject pJobject) {
     } else {
         LOGD("DSMemDex::LoadByte : %x", p);
     }
-    replace_classloader_cookie(env, pJobject);
+      replace_classloader_cookie(env, pJobject);
 
     return p;
 }
@@ -359,7 +380,7 @@ void DSMemDexArt::replace_resouce(JNIEnv *env, jobject pJobject) {
 
     jfieldID mResDir_id = env->GetFieldID(LoadedApk_class, "mResDir", "Ljava/lang/String;");
     env->GetObjectField(LoadedApk, Resources_id);
-    env->GetObjectField(LoadedApk,mResDir_id);
+    env->GetObjectField(LoadedApk, mResDir_id);
 
 
     jmethodID v20 = env->GetMethodID(Context_class, "getAssets",
@@ -397,8 +418,8 @@ void DSMemDexArt::replace_resouce(JNIEnv *env, jobject pJobject) {
                                       Configuration);
 
     env->SetObjectField(LoadedApk, Resources_id, jobject1);
-    env->SetObjectField(LoadedApk,mResDir_id,env->NewStringUTF(szPathxx));
-    printf("%s","ss");
+    env->SetObjectField(LoadedApk, mResDir_id, env->NewStringUTF(szPathxx));
+    printf("%s", "ss");
 }
 
 
@@ -487,7 +508,9 @@ int32_t DSMemDexArt::swapInt32(int32_t value) {
            ((value & 0xFF000000) >> 24);
 }
 
-void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
+void DSMemDexArt::copyFile(JNIEnv *env, const jobject obj) {
+
+
     jclass Context_class = env->FindClass("android/content/Context");
     jmethodID context_getPackageName_id = env->GetMethodID(Context_class, "getPackageName",
                                                            "()Ljava/lang/String;");
@@ -502,14 +525,14 @@ void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
 
     if (strcmp(mPackageName, "com.example.nativedex") == 0) {
         copyDexToByte(env, obj, "res.zip", len);
-        LOGD("%s","第一个copyDexToByte执行完");
+        LOGD("%s", "第一个copyDexToByte执行完");
         the_dex_byte = copyDexToByte(env, obj, "classes.dex", the_dex_size);
-        LOGD("%s","第2个copyDexToByte执行完");
+        LOGD("%s", "第2个copyDexToByte执行完");
     } else {
         //char *dex_byte_all = copyDexToByte(env, obj, "ForceApkObj_ok.dex", len);
 
-        char *dex_byte_all= (char *) DSMemDexArt::readDexFileFromApk(env, obj, len);
-        LOGD("%s","第3个copyDexToByte执行完");
+        char *dex_byte_all = (char *) DSMemDexArt::readDexFileFromApk(env, obj, len);
+        LOGD("%s", "第3个copyDexToByte执行完");
         char *dexSize_s = getSizeByoff(dex_byte_all, 4, len - 4);
         int dexSize = bytesToInt(dexSize_s);
         the_dex_size = dexSize;
@@ -533,30 +556,8 @@ void DSMemDexArt::copyFile(JNIEnv *env, jobject obj) {
     }
     replace_resouce(env, obj);
     copyDexToByte(env, obj, "classesjia.dex", len);
-    LOGD("%s","第4个copyDexToByte执行完");
+    LOGD("%s", "第4个copyDexToByte执行完");
 }
-
-
-/*
-char *DSMemDexArt::copyDexToByte_java(JNIEnv *env,jstring dexName, jobject context, int &dexlen) {
-    AssetManager assetManager = context.getAssets();
-    try {
-        InputStream open = assetManager.open(dexName);
-        ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream();
-
-        byte b[] = new byte[1024];
-        int len = 0;
-        while ((len = open.read(b)) != -1) {
-            fileOutputStream.write(b, 0, len);
-        }
-        return fileOutputStream.toByteArray();
-
-    } catch (IOException e) {
-        e.printStackTrace();
-        return null;
-    }
-}
-*/
 
 
 char *DSMemDexArt::copyDexToByte(JNIEnv *env, jobject application_obj, char *szPath, int &dexlen) {

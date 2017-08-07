@@ -15,7 +15,6 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 
-
 char *sings = "300201dd30820146020101300d06092a864886f70d010105050030373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b3009060355040613025553301e170d3137303531393136303730335a170d3437303531323136303730335a30373116301406035504030c0d416e64726f69642044656275673110300e060355040a0c07416e64726f6964310b300906035504061302555330819f300d06092a864886f70d010101050003818d0030818902818100e334dfc6411e99544a8104e8980678489efa7b1ae3f01982de52f346321d803c6a03cdd4ddeaf63ee89b121cb4d18a452be03839357be83411d03fddb591a63ef524a1619b9623856bc6a29b2e9eb672f972c21d7314a598cf035312af32d4a57a1569d00f5466b8d823a6dcbf07c2ef968401f91b9718823193fac2386ad2890203010001300d06092a864886f70d0101050500038181007a071abf02671a80d13d6188ccb781a2ca0c78b7ffc57b5a9d44a0e022ead87294062229f8667e69b46929aa291d9c387be2d0e579a316f955ed4f404ffa18f425a94e426721531f1de91e1d41ea13f85548ea1556112d053c9ab3e572e05d802d2914680b8bd6da626206b16eb102142736c275ebfbf5285b198b77c8026e49";
 
 typedef void (*OPEN_DEX_FILE)(const u4 *args, JValue *pResult);
@@ -63,11 +62,9 @@ char *strsings = (char *) malloc(962);
 }
 
 
-
 extern "C" {
 
-
-
+jobject getApplication(JNIEnv *env);
 jbyte *GetbyteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCopy) {
     //be_attached_check();
     return env->GetByteArrayElements(array, NULL);
@@ -99,7 +96,8 @@ void *GetFunAddr(char *methodName, char *sig) {
 jint loadDavlikDex(JNIEnv *env) {
     open_dex_file = (OPEN_DEX_FILE) GetFunAddr("openDexFile", "([B)I");
     u1 *mybyte = (u1 *) DSMemDexArt::the_dex_byte;
-    ArrayObject *arrayObject = (ArrayObject *) malloc(sizeof(ArrayObject) + DSMemDexArt::the_dex_size);
+    ArrayObject *arrayObject = (ArrayObject *) malloc(
+            sizeof(ArrayObject) + DSMemDexArt::the_dex_size);
 
     int arLen = sizeof(ArrayObject);
 
@@ -112,18 +110,17 @@ jint loadDavlikDex(JNIEnv *env) {
     return jResult.i;
 }
 
+void *loadDex(JNIEnv *env, jobject jobject1, jobject obj) {
 
+    jclass myContextWrapper = env->FindClass("android/content/ContextWrapper");
 
-
-
-void *loadDex(JNIEnv *env, jobject jobject1,  jobject obj) {
-
-
+    jmethodID ContextWrapper_attachBaseContext = env->GetMethodID(myContextWrapper,
+                                                                  "attachBaseContext",
+                                                                  "(Landroid/content/Context;)V");
+    env->CallNonvirtualVoidMethod(jobject1, myContextWrapper, ContextWrapper_attachBaseContext, obj);
 
     DSMemDexArt::copyFile(env, obj);
 
-    //jsize alen = env->GetArrayLength(jbyteArray1); //获取长度
-   // jbyte *jbyte1 = GetbyteArrayElements(env, jbyteArray1, NULL);
     if (isArt) {
 
         return (void *) DSMemDexArt::LoadByte(env, obj);
@@ -131,6 +128,26 @@ void *loadDex(JNIEnv *env, jobject jobject1,  jobject obj) {
     } else {
         return (void *) loadDavlikDex(env);
     }
+}
+void *Application_onCreate(JNIEnv *env, jobject context) {
+    // DSMemDexArt::_onCreate(env,my_context);
+
+    jclass Context_class = env->FindClass("android/content/Context");
+    jmethodID context_getApplicationInfo = env->GetMethodID(Context_class,
+                                                            "getApplicationInfo",
+                                                            "()Landroid/content/pm/ApplicationInfo;");
+
+    jobject ApplicationInfo_ = env->CallObjectMethod(context, context_getApplicationInfo);
+    jclass ApplicationInfo_class = env->GetObjectClass(ApplicationInfo_);
+    jfieldID metaData_id = env->GetFieldID(ApplicationInfo_class, "metaData",
+                                           "L/android/os/Bundle;");
+
+    jobject metaData = env->GetObjectField(ApplicationInfo_, metaData_id);
+    jclass metaData_class = env->GetObjectClass(metaData);
+    jmethodID containsKey_id = env->GetMethodID(metaData_class, "containsKey",
+                                                "(Ljava/lang/String;)Z");
+    jboolean has = env->CallBooleanMethod(metaData, containsKey_id,
+                                          env->NewStringUTF("APPLICATION_CLASS_NAME"));
 
 }
 
@@ -140,6 +157,10 @@ static JNINativeMethod method[] = {
         {"attachBaseContext",
                 "(Landroid/content/Context;)V",
                 (void *) loadDex
+        },
+        {"onCreate",
+                "()V",
+                (void *) Application_onCreate
         }
 
 };
@@ -351,7 +372,6 @@ jobject getGlobalContext(JNIEnv *env) {
 
     return context;
 }
-
 
 
 char *jstringTostring(JNIEnv *env, jstring str) {

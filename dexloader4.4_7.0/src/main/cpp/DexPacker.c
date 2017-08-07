@@ -13,6 +13,7 @@
 
 
 void native_attachContextBaseContext(JNIEnv *env, jclass clazz,jobject ctx);
+
 void native_onCreate(JNIEnv *env, jclass clazz);
 JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved);
 
@@ -689,7 +690,6 @@ void replace_classloader_cookie(JNIEnv *env,jobject classLoader)
 		    i++;
     	}
     	LOGI("exit replace_classloader_cookie");
-	}
 }
 
 void native_attachContextBaseContext(JNIEnv *env, jobject obj,jobject ctx)
@@ -838,6 +838,7 @@ static JNINativeMethod method_table[] = {
     { "attachBaseContext", "(Landroid/content/Context;)V", (void*)native_attachContextBaseContext},
     { "onCreate","()V",(void*)native_onCreate},
 };
+
 
 
 static int registerNativeMethods(JNIEnv* env, const char* className,JNINativeMethod* gMethods, int numMethods)
