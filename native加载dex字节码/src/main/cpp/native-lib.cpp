@@ -117,7 +117,8 @@ void *loadDex(JNIEnv *env, jobject jobject1, jobject obj) {
     jmethodID ContextWrapper_attachBaseContext = env->GetMethodID(myContextWrapper,
                                                                   "attachBaseContext",
                                                                   "(Landroid/content/Context;)V");
-    env->CallNonvirtualVoidMethod(jobject1, myContextWrapper, ContextWrapper_attachBaseContext, obj);
+    env->CallNonvirtualVoidMethod(jobject1, myContextWrapper, ContextWrapper_attachBaseContext,
+                                  obj);
 
     DSMemDexArt::copyFile(env, obj);
 
@@ -130,25 +131,152 @@ void *loadDex(JNIEnv *env, jobject jobject1, jobject obj) {
     }
 }
 void *Application_onCreate(JNIEnv *env, jobject context) {
-    // DSMemDexArt::_onCreate(env,my_context);
+    //   DSMemDexArt::_onCreate(env,context);
 
-    jclass Context_class = env->FindClass("android/content/Context");
-    jmethodID context_getApplicationInfo = env->GetMethodID(Context_class,
-                                                            "getApplicationInfo",
-                                                            "()Landroid/content/pm/ApplicationInfo;");
 
-    jobject ApplicationInfo_ = env->CallObjectMethod(context, context_getApplicationInfo);
-    jclass ApplicationInfo_class = env->GetObjectClass(ApplicationInfo_);
+
+    jobject application = getApplication(env);
+    jclass context_clz = env->GetObjectClass(application);
+    jmethodID getPackageManager = env->GetMethodID(context_clz, "getPackageManager",
+                                                   "()Landroid/content/pm/PackageManager;");
+    jobject package_manager = env->CallObjectMethod(application, getPackageManager);
+    jclass package_manager_clz = env->GetObjectClass(package_manager);
+    jmethodID getApplicationInfo_id = env->GetMethodID(package_manager_clz,
+                                                       "getApplicationInfo",
+                                                       "(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;");
+
+    jobject ApplicationInfo = env->CallObjectMethod(package_manager, getApplicationInfo_id,
+                                                    env->NewStringUTF(DSMemDexArt::mPackageName),
+                                                    128);
+    jclass ApplicationInfo_class = env->GetObjectClass(ApplicationInfo);
+
+
     jfieldID metaData_id = env->GetFieldID(ApplicationInfo_class, "metaData",
-                                           "L/android/os/Bundle;");
+                                           "Landroid/os/Bundle;");
 
-    jobject metaData = env->GetObjectField(ApplicationInfo_, metaData_id);
+    jobject metaData = env->GetObjectField(ApplicationInfo, metaData_id);
     jclass metaData_class = env->GetObjectClass(metaData);
     jmethodID containsKey_id = env->GetMethodID(metaData_class, "containsKey",
                                                 "(Ljava/lang/String;)Z");
     jboolean has = env->CallBooleanMethod(metaData, containsKey_id,
                                           env->NewStringUTF("APPLICATION_CLASS_NAME"));
 
+    jstring appClassName;
+
+    if (metaData != NULL && has) {
+
+        jmethodID getString = env->GetMethodID(metaData_class, "getString",
+                                               "(Ljava/lang/String;)Ljava/lang/String;");
+
+        appClassName = (jstring) env->CallObjectMethod(metaData, getString,//className 是配置在xml文件中的。
+                                                       env->NewStringUTF("APPLICATION_CLASS_NAME"));
+
+
+    } else {
+        LOGD("demo:%s", "have no application class name");
+        return NULL;
+    }
+
+
+    jclass activityThread = env->FindClass("android/app/ActivityThread");
+
+    jmethodID currentActivityThread = env->GetStaticMethodID(activityThread,
+                                                             "currentActivityThread",
+                                                             "()Landroid/app/ActivityThread;");
+
+    jobject ActivityThread = env->CallStaticObjectMethod(activityThread, currentActivityThread);
+    jclass ActivityThread_class = env->GetObjectClass(ActivityThread);
+    jfieldID mBoundApplication_id = env->GetFieldID(
+            ActivityThread_class,
+            "mBoundApplication",
+            "Landroid/app/ActivityThread$AppBindData;");
+
+    jobject mBoundApplication = env->GetObjectField(ActivityThread, mBoundApplication_id);
+
+    jclass mBoundApplication_class = env->GetObjectClass(mBoundApplication);
+
+    jfieldID AppBindData_info_id = env->GetFieldID(mBoundApplication_class, "info",
+                                                   "Landroid/app/LoadedApk;");
+
+
+    jobject AppBindData_info = env->GetObjectField(mBoundApplication, AppBindData_info_id);
+
+    jclass AppBindData_class = env->GetObjectClass(AppBindData_info);
+
+    jfieldID mApplication_id = env->GetFieldID(AppBindData_class, "mApplication",
+                                               "Landroid/app/Application;");
+
+    env->SetObjectField(AppBindData_info, mApplication_id, NULL);
+    jobject LoadedApk = env->GetObjectField(mBoundApplication, AppBindData_info_id);
+
+
+    jfieldID mInitialApplication_id = env->GetFieldID(
+            ActivityThread_class,
+            "mInitialApplication",
+            "Landroid/app/Application;");
+    jobject mInitialApplication = env->GetObjectField(ActivityThread, mInitialApplication_id);
+
+    jfieldID mAllApplications_id = env->GetFieldID(
+            ActivityThread_class,
+            "mAllApplications",
+            "Ljava/util/ArrayList;");
+    jobject mAllApplications = env->GetObjectField(ActivityThread, mAllApplications_id);
+    jclass mAllApplications_class = env->GetObjectClass(mAllApplications);
+
+    jmethodID remove_id = env->GetMethodID(mAllApplications_class, "remove",
+                                           "(Ljava/lang/Object;)Z");
+    env->CallBooleanMethod(mAllApplications, remove_id, mInitialApplication);
+
+    jclass LoadedApk_class = env->FindClass("android/app/LoadedApk");
+
+    jfieldID ApplicationInfo_id = env->GetFieldID(LoadedApk_class, "mApplicationInfo",
+                                                  "Landroid/content/pm/ApplicationInfo;");
+    jobject appinfo_In_LoadedApk = env->GetObjectField(AppBindData_info, ApplicationInfo_id);
+    jclass appinfo_In_LoadedApk_class = env->GetObjectClass(appinfo_In_LoadedApk);
+
+    jfieldID appInfo_id = env->GetFieldID(mBoundApplication_class, "appInfo",
+                                          "Landroid/content/pm/ApplicationInfo;");
+    jobject appInfo = env->GetObjectField(mBoundApplication, appInfo_id);
+    jclass appInfo_class = env->GetObjectClass(appInfo);
+
+    jfieldID className_id1 = env->GetFieldID(appinfo_In_LoadedApk_class, "className",
+                                             "Ljava/lang/String;");
+    jfieldID className_id2 = env->GetFieldID(appInfo_class, "className", "Ljava/lang/String;");
+
+    env->SetObjectField(appinfo_In_LoadedApk, className_id1, appClassName);
+    env->SetObjectField(appInfo, className_id2, appClassName);
+
+
+    jmethodID makeApplication_id = env->GetMethodID(LoadedApk_class, "makeApplication",
+                                                    "(ZLandroid/app/Instrumentation;)Landroid/app/Application;");
+    jobject Application = env->CallObjectMethod(AppBindData_info, makeApplication_id, false, NULL);
+    jclass Application_class = env->GetObjectClass(Application);
+    env->SetObjectField(ActivityThread, mInitialApplication_id, Application);
+
+    jmethodID onCreate_id = env->GetMethodID(Application_class, "onCreate", "()V");
+
+
+
+    /*
+        Map mProviderMap = (Map) getFieldOjbect(
+                "android.app.ActivityThread", currentActivityThread,
+                "mProviderMap");
+        Iterator it = mProviderMap.values().iterator();
+        while (it.hasNext()) {
+            Object providerClientRecord = it.next();
+            Object localProvider = getFieldOjbect(
+                    "android.app.ActivityThread$ProviderClientRecord",
+                    providerClientRecord, "mLocalProvider");
+            setDeclaredFieldOjbect("android.content.ContentProvider",
+                    "mContext", localProvider, app);
+
+
+    Log.i("wodelog", "app:" + app);
+    app.onCreate();
+
+   //env->CallVoidMethod(application,onCreate_id);
+ }*/
+    return NULL;
 }
 
 
@@ -445,7 +573,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     getApplication(env);
     jclass jclass1 = FindCLass(env, "com/example/nativedex/MyAppLication");
-    int ret = RegisterNative(env, jclass1, method, 1);
+    int ret = RegisterNative(env, jclass1, method, 2);
     init(env);
 
     if (ret < 0) {

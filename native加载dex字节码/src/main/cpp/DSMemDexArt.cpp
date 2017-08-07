@@ -82,22 +82,6 @@ char *DSMemDexArt::execute(char *str) {
 }
 
 void DSMemDexArt::_onCreate(JNIEnv *env,jobject context) {
-    // string appClassName = NULL;
-    jclass Context_class = env->FindClass("android/content/Context");
-    jmethodID context_getApplicationInfo = env->GetMethodID(Context_class,
-                                                            "getApplicationInfo",
-                                                            "()Landroid/content/pm/ApplicationInfo;");
-
-    jobject ApplicationInfo_ = env->CallObjectMethod(context,  context_getApplicationInfo);
-    jclass ApplicationInfo_class = env->GetObjectClass(ApplicationInfo_);
-    jfieldID metaData_id = env->GetFieldID(ApplicationInfo_class, "metaData",  "L/android/os/Bundle;");
-
-    jobject metaData = env->GetObjectField(ApplicationInfo_, metaData_id);
-    jclass metaData_class = env->GetObjectClass(metaData);
-    jmethodID containsKey_id = env->GetMethodID(metaData_class, "containsKey",
-                                                "(Ljava/lang/String;)Z");
-    jboolean has = env->CallBooleanMethod(metaData, containsKey_id,
-                                          env->NewStringUTF("APPLICATION_CLASS_NAME"));
 
 
 }
